@@ -1,0 +1,64 @@
+<div  class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel17">Formulario Rol</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form th:action="@{../registrarRol}" method="post" id="form1">
+    
+        <div class="modal-body">
+            <label>Nombre Rol: </label>
+            <div class="form-group">
+                <input type="hidden" name="id_rol">
+                <input type="text" placeholder="Nombre Rol" name="nom_rol" class="form-control">
+            </div>
+    
+            <label>Descripcion: </label>
+            <div class="form-group">
+                <input type="text" placeholder="Descripcion" name="descripcion" class="form-control">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline-success">Registrar</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $('#form1').submit(function (event) {
+        event.preventDefault();
+
+        var form = document.getElementById("form1");
+        var action = form.action;
+        var formData = $(this).serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            contentType: 'application/x-www-form-urlencoded',
+            success: function (response) {
+                var mensaje = response;
+                if (mensaje === "1") {
+                    Swal.fire({
+                        title: 'Registro Exitoso!',
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    cargarTabla();
+                    $("#formRol").modal("hide");
+                    
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Ha ocurrido un error. Por favor, intenta nuevamente.' + xhr, status, error);
+                console.error(error);
+                // Manejo de errores
+            }
+        });
+
+    });
+</script>

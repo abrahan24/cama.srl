@@ -1,0 +1,112 @@
+.table-inverse {
+    th, td {
+        color: $black;
+    }
+}
+
+
+.table {
+    tr {
+        td {
+            .btn-float {
+                line-height: 1;
+            }
+
+            vertical-align: middle !important;
+        }
+    }
+
+    tfoot th {
+        height: auto;
+    }
+}
+
+.dataTables_wrapper {
+    .dataTables_length label {
+        color: $black;
+    }
+
+    // For Button Api
+    .dt-buttons {
+        .btn {
+            color: $white;
+        }
+    }
+}
+
+// For Touchpin in Travel Template
+
+.bootstrap-touchspin {
+    .input-group-prepend {
+        margin-right: auto;
+    }
+
+    .input-group-append {
+        margin-left: auto;
+    }
+}
+
+// For Table Components
+
+#ui.row {
+    .card {
+        .card-content {
+            .table-responsive {
+                .table.table-responsive.table-bordered {
+                    .btn.btn-float.btn-info {
+                        i.ft-search {
+                            font-size: 1.2rem;
+                        }
+
+                        span {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// For DataTable Api
+
+@media screen and (max-width:540px) {
+
+    #child-row,
+    #restore-column,
+    #export-column,
+    #horizontal-snap,
+    #initialization,
+    #configuration,
+    #headers,
+    #ajax,
+    #server-processing {
+        .card {
+            .card-content {
+                .card-body {
+                    .dataTables_wrapper.dt-bootstrap4 {
+                        .table.table-striped.table-bordered.show-child-rows.dataTable {
+                            width: auto !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #buttons {
+        .card {
+            .card-body {
+                .dataTables_wrapper.dt-bootstrap4 {
+                    .dt-buttons.btn-group {
+                        display: inline-block !important;
+
+                        .btn {
+                            margin-bottom: 0.5rem !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

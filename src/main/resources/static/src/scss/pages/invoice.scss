@@ -1,0 +1,57 @@
+// ================================================================================================
+// 	File Name: invoice.scss
+// 	Description: Invoice Layout page layouts SCSS.
+// 	----------------------------------------------------------------------------------------------
+// 	Item Name: Modern Admin - Clean Bootstrap 4 Dashboard HTML Template
+// 	Author: PIXINVENT
+// 	Author URL: http://www.themeforest.net/user/pixinvent
+// ================================================================================================
+
+
+// media query for print
+@media print {
+
+  //  Hide a Unnecessary text in invoice print
+  .content-header,
+  .buy-now,
+  .btn-print,
+  .footer,
+  .open,
+  .main-menu {
+    display: none;
+  }
+
+  #invoice-template,
+  .content-wrapper,
+    {
+    padding-top: 0;
+  }
+
+  .app-content,
+  #invoice-template,
+  .navbar-container,
+  .navbar-wrapper,
+  .header-navbar {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  #invoice-footer {
+    position: relative;
+    top: -80px !important;
+  }
+
+  // edge spacific scss
+  .table-responsive {
+    -ms-overflow-style: none;
+
+  }
+}
+
+// omitted header and footer while print
+@page {
+  // print page size auto
+  size: auto;
+  //  margin for print page
+  margin: 0px;
+}

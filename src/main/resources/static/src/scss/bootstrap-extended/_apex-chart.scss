@@ -1,0 +1,16 @@
+// =========================================================================================
+//     File Name: charts-apexcharts.css
+//     Description: Apex charts css.
+//     --------------------------------------------------------------------------------------
+//     Item Name: Modern Admin - Clean Bootstrap 4 Dashboard HTML Template
+//     Author: PIXINVENT
+//     Author URL: http://www.themeforest.net/user/pixinvent
+// ==========================================================================================
+
+// Override apex charts default text color of tooltip (on hover) & dropdown
+.apexcharts-tooltip, .apexcharts-xaxistooltip, .apexcharts-menu-item, .apexcharts-yaxistooltip  {
+  color: #000 !important;
+  &.light{
+    color: #000 !important;
+  }
+}

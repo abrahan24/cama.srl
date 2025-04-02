@@ -1,0 +1,47 @@
+<table class="table table-striped table-bordered file-export" id="tablaE">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Rol</th>
+            <th>Enlaces</th>
+            <th>Sub Enlaces</th>
+            <th>Accion</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="r , num: ${roles}">
+            <td  th:text="${num.index + 1}"></td>
+            <td  th:text="${r.nom_rol}"></td>
+            <td >
+                <ul th:each="e : ${r.enlaces}">
+                    <li th:text="${e.nom_enlace}"></li>
+                </ul>
+            </td>
+            <td>
+                <ul th:each="e : ${r.enlaces}">
+                    <li th:each="sub : ${e.subEnlaces}" th:text="${sub.nom_sub_enlace}"></li>
+                </ul>
+            </td>
+            <td class="text-center">
+                <div class="btn-group mr-1 mb-1">
+                    <button type="button" class="btn btn-secondary btn-min-width dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="la la-user"></i>
+                        Opciones</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Editar</a>
+                        <a class="dropdown-item" href="#">Eliminar</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Rol</th>
+            <th>Enlaces</th>
+            <th>Sub Enlaces</th>
+            <th>Accion</th>
+        </tr>
+    </tfoot>
+</table>
+

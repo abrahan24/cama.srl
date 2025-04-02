@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+
+<head th:insert="~{Layouts/Head :: head}"> </head>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+
+<body class="vertical-layout vertical-menu-modern vertical-collapsed-menu 2-columns   menu-collapsed fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+
+    <!-- BEGIN: Header-->
+    <nav th:insert="~{Layouts/Navbar :: navbar}">
+        
+    </nav>
+    <!-- END: Header-->
+
+    <!-- BEGIN: Main Menu-->
+
+    <div id="menuPrincipal"> </div>
+
+    <!-- END: Main Menu-->
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <!-- eCommerce statistic -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card pull-up">
+                            <div class="card-content">
+                                <div class="card-body">
+                                    <div class="media d-flex">
+                                        <div class="media-body text-left">
+                                            <h3 class="info" th:text="${'Bienvenido al Sistema '+ session.usuario.persona.nombres}"></h3>
+                                            <!-- <h6></h6> -->
+                                        </div>
+                                        <div>
+                                            <i class="icon-screen-desktop info font-large-2 float-right"></i>
+                                        </div>
+                                    </div>
+                                    <div class="progress progress-sm mt-1 mb-0 box-shadow-2">
+                                        <div class="progress-bar bg-gradient-x-info" role="progressbar" style="width: 100%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <!-- BEGIN: Footer-->
+    <footer th:insert="~{Layouts/Footer :: footer}"> </footer>
+    <!-- END: Footer-->
+
+    <div th:insert="~{Layouts/Scripts :: scripts}"></div>
+
+</body>
+<!-- END: Body-->
+
+</html>

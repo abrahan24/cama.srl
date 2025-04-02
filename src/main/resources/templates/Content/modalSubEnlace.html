@@ -1,0 +1,83 @@
+<div  class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel17">Formulario SubEnlace</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form th:action="@{../registrarSubEnlace}" method="post" id="form1">
+        <div class="modal-body">
+            <label>Seleccione Enlace: </label>
+            <div class="form-group">
+                <select class="select2 form-control block" id="responsive_single2" name="id_enlace" style="width: 100%;"
+                    required>
+                    <option value="" selected></option>
+                    <option th:each="e : ${enlaces}" th:value="${e.id_enlace}" th:text="${e.nom_enlace}"></option>
+                    <!-- <option value="HI">Hawaii</option> -->
+                </select>
+            </div>
+    
+            <label>Nombre SubEnlace: </label>
+            <div class="form-group">
+                <input type="hidden" name="id_sub_enlace">
+                <input type="text" placeholder="Nombre SubEnlace" class="form-control" name="nom_subenlace" required>
+            </div>
+    
+            <label>Ruta SubEnlace: </label>
+            <div class="form-group">
+                <input type="text" placeholder=" /Ruta" class="form-control" name="ruta_subenlace" required>
+            </div>
+    
+            <label>Icono SubEnlace: </label>
+            <div class="form-group">
+                <input type="text" placeholder="la la-home" class="form-control" name="icono_subenlace">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+            <button type="submit" class="btn btn-outline-success">Registrar</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#responsive_single2').select2({
+            placeholder:"Seleccione..."
+        });
+    });
+
+    $('#form1').submit(function (event) {
+        event.preventDefault();
+
+        var form = document.getElementById("form1");
+        var action = form.action;
+        var formData = $(this).serialize();
+
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: formData,
+            contentType: 'application/x-www-form-urlencoded',
+            success: function (response) {
+                var mensaje = response;
+                if (mensaje === "1") {
+                    Swal.fire({
+                        title: 'Registro Exitoso!',
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    cargarTabla();
+                    $("#formSubEnlace").modal("hide");
+                    
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Ha ocurrido un error. Por favor, intenta nuevamente.' + xhr, status, error);
+                console.error(error);
+                // Manejo de errores
+            }
+        });
+    });
+</script>

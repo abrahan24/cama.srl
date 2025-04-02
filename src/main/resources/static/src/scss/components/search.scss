@@ -1,0 +1,171 @@
+/*=========================================================================================
+	File Name: search.scss
+	Description: Search  functionality.
+	----------------------------------------------------------------------------------------
+	Item Name: Modern Admin - Clean Bootstrap 4 Dashboard HTML Template
+	Author: PIXINVENT
+	Author URL: http://www.themeforest.net/user/pixinvent
+==========================================================================================*/
+
+.navbar-container {
+
+  a.nav-link-search {
+    float: left;
+  }
+
+  .search-input {
+    position: relative;
+    float: left;
+    width: 0;
+
+    .input {
+      width: 0;
+      visibility: hidden;
+      border: none;
+      background: none;
+      transition: all 0.2s ease-out;
+      line-height: 16px;
+      padding: 2.01rem 2.7rem;
+      color: $black !important;
+
+      &::placeholder {
+        color: $black !important;
+      }
+    }
+
+    &.open {
+      position: absolute;
+      left: 0;
+      background: $white;
+      right: 0;
+      top: 1px;
+      width: 100%;
+      z-index: 1001;
+      margin-top: -1px;
+      border-left: 1px solid $border-color;
+
+      .search-input-close,
+      .search-input-icon {
+        display: block;
+      }
+
+      input {
+        visibility: visible;
+        width: 100%;
+        outline: none;
+        background: none;
+      }
+    }
+
+    .search-list {
+      position: absolute !important;
+      top: 100%;
+      left: 0;
+      background: $white;
+      width: 60rem;
+      margin-top: 0.8rem;
+      padding-left: 0;
+      border-radius: $border-radius;
+      display: none;
+
+      &.show {
+        display: block;
+        width: 98%;
+        left: 1%;
+        box-shadow: -8px 12px 18px 0 rgba(25, 42, 70, 0.13);
+      }
+
+      li {
+        a {
+          padding: 1.2rem 1rem;
+          color: $body-color;
+
+          span[class*="bx bx-"] {
+            font-size: 1.25rem;
+          }
+        }
+
+        &:first-child {
+          border-top-left-radius: $border-radius;
+          border-top-right-radius: $border-radius;
+        }
+
+        &:last-child {
+          border-bottom-left-radius: $border-radius;
+          border-bottom-right-radius: $border-radius;
+        }
+
+        &:hover,
+        &.current_item {
+          background-color: #f2f4f4;
+        }
+      }
+    }
+
+    .search-input-close {
+      z-index: 1001;
+      display: none;
+      position: absolute;
+      right: 1rem;
+      top: 40%;
+      cursor: pointer;
+    }
+  }
+}
+
+.navbar-light,
+.navbar-semi-dark {
+  .search-input {
+    .input {
+      color: #2C303B;
+
+      &::placeholder {
+        color: #2C303B;
+      }
+    }
+
+    &.open {
+      .input {
+        color: #2C303B;
+
+      }
+    }
+  }
+}
+
+.navbar-dark,
+.navbar-semi-light {
+  .search-input {
+    .input {
+      color: #F9FAFD;
+
+      &::placeholder {
+        color: #F9FAFD;
+      }
+    }
+
+    &.open {
+      .input {
+        color: #F9FAFD;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  #search-results {
+    li {
+      &.media {
+        flex-direction: column;
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  #search-results {
+    .img-fluid.rounded {
+      margin-right: 1rem;
+    }
+  }
+}

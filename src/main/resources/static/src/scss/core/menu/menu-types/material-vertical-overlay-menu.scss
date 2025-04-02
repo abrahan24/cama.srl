@@ -1,0 +1,266 @@
+/*=========================================================================================
+	File Name: vertical-overlay-menu.scss
+	Description: A overlay style vertical menu with show and hide support. It support
+	light & dark version, filpped layout, right side icons, native scroll and borders menu
+	item seperation.
+	----------------------------------------------------------------------------------------
+	Item Name: Modern Admin - Clean Bootstrap 4 Dashboard HTML Template
+	Author: PIXINVENT
+	Author URL: http://www.themeforest.net/user/pixinvent
+==========================================================================================*/
+
+// Core variables and mixins
+@import "../../../bootstrap/functions";
+@import "../../../bootstrap/mixins";
+@import "../../../bootstrap-extended/mixins";
+
+// Core variables and mixins overrides
+@import "../../variables/material-variables";
+@import "../../../bootstrap/variables";
+
+@import "../../variables/components-variables";
+
+// Import first main menu mixin
+@import "../../mixins/main-menu-mixin";
+
+// Vertical Overlay Menu
+//=========================
+.vertical-overlay-menu {
+  //Content expanded
+  .content {
+    @include main-menu-width(0);
+  }
+
+  //Navbar expanded
+  .navbar {
+    .navbar-header {
+      @include menu-navbar-width($overlay-menu-width);
+    }
+
+    &.navbar-brand-center {
+      .navbar-container {
+        @include main-menu-width(auto);
+      }
+
+      .navbar-header {
+        @include menu-navbar-width(auto);
+      }
+    }
+  }
+
+  // Main menu expanded
+  .main-menu {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+    transition: width 0.25s, opacity 0.25s, transform 0.25s;
+    width: $overlay-menu-width;
+    left: -($overlay-menu-width);
+
+    // main-menu-content height
+    &.menu-fixed {
+      height: calc(100% - #{$navbar-height});
+      .main-menu-content {
+        height: calc(100% - 12rem) !important;
+        position: relative;
+        padding-top: 3px;
+      }
+    }
+
+    &.material-menu .main-menu-content .navigation li.active > a{
+      border: none;
+    }
+
+    .navigation {
+      .navigation-header {
+				padding-left: 34px;
+        .ft-minus,
+        .nav-menu-icon {
+          display: none;
+        }
+      }
+
+      > li {
+        > a {
+					padding-left: 32px;
+          > i {
+            font-size: 1.6rem;
+            margin-right: 12px;
+            float: left;
+
+            &:before {
+              transition: 200ms ease all;
+            }
+          }
+          span.badge{
+            right: 26px !important;
+          }
+        }
+        &.hover{
+					>a {
+						padding-left: 28px;
+					}
+				}
+				ul li{
+					> a{
+						padding-left: 68px;
+					}
+				}
+				.active{
+					> a{
+						padding-left: 54px;
+					}
+				}
+				
+				ul .open > ul li{
+					> a{
+						padding-left: 74px;
+					}
+					&:not(.active):hover > a{
+						padding-left: 78px;
+					}
+				}
+				&.open > ul > li{
+					&:hover {
+						> a{
+							padding-left: 72px;
+						}
+						&.active > a{
+							padding-left: 54px;
+						}
+					}
+				}
+      }
+
+      li {
+        @include vertical-menu-has-sub-arrow(1rem);
+        &.has-sub {
+					> a:not(.mm-next):after {
+            right: 28px;
+            top: 13px;
+					}
+				}
+      }
+    }
+  }
+
+  &.menu-open {
+    .main-menu {
+      opacity: 1;
+      transform: translate3d($overlay-menu-width, 0, 0);
+      transition: width 0.25s, opacity 0.25s, transform 0.25s;
+    }
+  }
+
+  &.menu-hide {
+    .main-menu {
+      @extend .main-menu;
+    }
+  }
+
+  // Flipped menu open
+  &.menu-flipped {
+    // Main menu hidden on flipped
+    .main-menu {
+      right: -($overlay-menu-width);
+      left: inherit;
+    }
+
+    //Navbar flipped
+    .navbar {
+      .navbar-container {
+        @include vertical-flipped-menu($overlay-menu-width);
+      }
+
+      .navbar-header {
+        float: right;
+      }
+    }
+
+    &.menu-open {
+      .main-menu {
+        transform: translate3d(-$overlay-menu-width, 0, 0);
+      }
+    }
+  }
+  // For Fixed-footer
+  footer {
+    &.footer {
+      &.fixed-bottom {
+        z-index: 999;
+      }
+    }
+  }
+  &.boxed-layout {
+    &.menu-open {
+      .main-menu {
+        transform: translate3d($overlay-menu-width, 0, 0) !important;
+      }
+    }
+  }
+  	// Boxed Layout
+	&.boxed-layout{
+		position: relative;
+
+		.main-menu{
+			&.menu-fixed{
+				position: absolute;
+			}
+		}
+	}
+}
+
+// @include media-breakpoint-down(md) {
+//   .vertical-overlay-menu {
+//     //Box-layout
+//     &[data-menu="vertical-compact-menu"] {
+//       &.boxed-layout {
+//         &.menu-open {
+//           .main-menu {
+//             transform: translate3d($compact-menu-width, 0, 0) !important;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// Layout Boxed for down to sm screen
+@media screen and (max-width: 575px) {
+  // main-menu for Box-layout
+  &.vertical-overlay-menu {
+    &.boxed-layout {
+      &.menu-open {
+        .main-menu {
+          transform: translate3d($overlay-menu-width, 0, 0) !important;
+        }
+      }
+    }
+  }
+}
+
+// For Material Design
+@import "material-user-profile";
+
+// For Material Icons in main menu
+
+.material-vertical-layout {
+  &.vertical-overlay-menu {
+    .main-menu .navigation > li > a i {
+      position: relative;
+      top: 0.7rem;
+
+      &.material-icons {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

@@ -1,0 +1,19 @@
+//	===============================================================================================
+//  File Name: horizontal.scss
+//  Description: Horizontal layout SASS file for layout related changes only
+//  ----------------------------------------------------------------------------------------------
+//  Item Name: Modern Admin - Clean Bootstrap 4 Dashboard HTML Template
+//  Author: PIXINVENT
+//  Author URL: http://www.themeforest.net/user/pixinvent
+// ================================================================================================
+
+.horizontal-menu-padding{
+	.header-navbar {
+		.navbar-container{
+			padding: 0;
+		}
+	}
+}
+.header-navbar .navbar-container{
+	height: auto;
+}

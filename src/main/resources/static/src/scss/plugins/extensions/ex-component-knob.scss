@@ -1,0 +1,22 @@
+// Core variables and mixins
+@import "../../bootstrap/functions";
+@import "../../bootstrap/mixins";
+
+// Core variables and mixins overrides
+@import "../../core/variables/variables";
+@import "../../bootstrap/variables";
+
+@import "../../core/variables/components-variables";
+
+.superpose-clock-hour {
+  left: 10px;
+  top: 10px;
+}
+.superpose-clock-minute {
+  left: 50px;
+  top: 50px;
+}
+.superpose-clock-second {
+  left: 85px;
+  top: 85px;
+}
