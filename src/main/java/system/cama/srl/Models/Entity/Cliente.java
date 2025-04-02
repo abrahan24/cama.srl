@@ -33,6 +33,7 @@ public class Cliente implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_cliente;
     private String nit;
+    private String nom_cliente;
     private String cod_cliente;
     private Date fecha_registro;
     private Date fecha_modificacion;

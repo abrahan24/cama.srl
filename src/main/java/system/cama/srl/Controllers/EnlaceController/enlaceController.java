@@ -140,7 +140,11 @@ public class enlaceController {
            enlace.setRol(rolService.findOne(id_rol));
            enlace.setNom_enlace(nom_enlace);
            enlace.setRuta_enlace(ruta_enlace);
-           enlace.setIcono_enlace(icono_enlace);
+           if (icono_enlace == null || icono_enlace.trim().isEmpty()) {
+               enlace.setIcono_enlace(null); // o cualquier valor predeterminado
+           } else {
+               enlace.setIcono_enlace(icono_enlace);
+           }
            enlace.setEstado_enlace("A");
            enlaceService.save(enlace);
 
@@ -177,4 +181,5 @@ public class enlaceController {
         }
     }
 
+    
 }
