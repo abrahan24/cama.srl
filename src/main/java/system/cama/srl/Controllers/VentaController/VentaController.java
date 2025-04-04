@@ -1,5 +1,7 @@
 package system.cama.srl.Controllers.VentaController;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.HttpServletRequest;
+import system.cama.srl.Models.Entity.Cliente;
+import system.cama.srl.Models.Service.ClienteService;
 import system.cama.srl.Models.Service.VentaService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +28,9 @@ public class VentaController {
 
     @Autowired
     private SpringTemplateEngine templateEngine;
+
+    @Autowired
+    private ClienteService clienteService;
 
     @GetMapping("/registroVenta")
     public String registro_venta(Model model, HttpServletRequest request) {
@@ -58,6 +65,60 @@ public class VentaController {
         }
     }
     
+    @PostMapping("/obtenerClientesPorNombres/{nombres}")
+    public ResponseEntity<?> obtenerClientesPorNombres(HttpServletRequest request,
+        @PathVariable("nombres") String nombres) {
+        
+        if (request.getSession().getAttribute("usuario") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");
+        }
+        
+        Context context = new Context();
+        context.setVariable("clientes", clienteService.findByNombresPersonaContaining(nombres)); 
+        String htmlContent = templateEngine.process("Venta/tablaClienteAntiguo", context);
+        return ResponseEntity.ok(htmlContent);
+    }
+    
+    @PostMapping("/obtenerClientesPorNit/{nit}")
+    public ResponseEntity<?> obtenerClientesPorNit(HttpServletRequest request,
+        @PathVariable("nit") String nit) {
+        
+        if (request.getSession().getAttribute("usuario") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");
+        }
+        
+        Context context = new Context();
+        context.setVariable("clientes", clienteService.findByNitContaining(nit)); 
+        String htmlContent = templateEngine.process("Venta/tablaClienteAntiguo", context);
+        return ResponseEntity.ok(htmlContent);
+    }
 
+    @PostMapping("/obtenerClientesPorCi/{ci}")
+    public ResponseEntity<?> obtenerClientesPorCi(HttpServletRequest request,
+        @PathVariable("ci") String ci) {
+        
+        if (request.getSession().getAttribute("usuario") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");
+        }
+        
+        Context context = new Context();
+        context.setVariable("clientes", clienteService.findByCiPersonaContaining(ci)); 
+        String htmlContent = templateEngine.process("Venta/tablaClienteAntiguo", context);
+        return ResponseEntity.ok(htmlContent);
+    }
+
+    @PostMapping("/registrarVentaClienteAntiguo")
+    public String registrarVentaClienteAntiguo(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return entity;
+    }
+    
+    @PostMapping("/RegistrarVentaClienteNuevo")
+    public String RegistrarVentaClienteNuevo(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return entity;
+    }
     
 }

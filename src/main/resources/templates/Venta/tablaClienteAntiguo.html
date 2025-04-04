@@ -1,0 +1,12 @@
+
+    <tr th:each="c, num : ${clientes}">
+        <td th:text="${num.index + 1}"></td>
+        <td th:text="${c.persona.nombres +' '+ c.persona.apellidos}"></td>
+        <td th:text="${c.persona.ci}"></td>
+        <td th:text="${c.nom_cliente}"></td>
+        <td th:text="${c.nit}"></td>
+        <td class="text-center">
+            <button type="button" class="btn btn-success btn-min-width mr-1 mb-1" th:attr="onclick='seleccionarCliente(' + ${c.id_cliente} + ')'"><i class="la la-check"></i>
+                Seleccionar</button>
+        </td>
+    </tr>                                

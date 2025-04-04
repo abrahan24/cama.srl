@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-6">
+    <div class="col-4">
         <div class="card">
             <div class="card-header">
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
@@ -15,19 +15,19 @@
                 <div class="card-body">
                     <form class="form form-horizontal">
                         <div class="form-body">
-                            <h4 class="form-section"><i class="ft-user-check"></i> Datos Cliente</h4>
+                            <h4 class="form-section"><i class="ft-user-check"></i>Busqueda de Cliente</h4>
                             <div class="form-group row">
                                 <label class="col-md-3 label-control" for="projectinput1">Nombres</label>
                                 <div class="col-md-9 mx-auto">
-                                    <input type="text" id="projectinput1" class="form-control" placeholder="Nombres" name="fname" required
-                                        data-validation-required-message="Campo Requerido">
+                                    <input type="text" id="projectinput1" class="form-control" placeholder="Nombres" name="nombres" required
+                                        data-validation-required-message="Campo Requerido" >
                                 </div>
                             </div>
                             
                             <div class="form-group row">
                                 <label class="col-md-3 label-control" for="projectinput2">NIT</label>
                                 <div class="col-md-9 mx-auto">
-                                    <input type="number" id="projectinput2" class="form-control" placeholder="NIT" name="lname" required
+                                    <input type="number" id="projectinput2" class="form-control" placeholder="NIT" name="nit" required
                                         data-validation-required-message="Campo Requerido">
                                 </div>
                             </div>
@@ -36,18 +36,17 @@
                                 <label class="col-md-3 label-control" for="projectinput3">Cedula de
                                     Identidad (C.I)</label>
                                 <div class="col-md-9 mx-auto">
-                                    <input type="text" id="projectinput3" class="form-control" placeholder="CI" name="email" required
+                                    <input type="text" id="projectinput3" class="form-control" placeholder="CI" name="ci" required
                                         data-validation-required-message="Campo Requerido">
                                 </div>
                             </div>
-    
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-6">
+    <div class="col-8">
         <div class="card">
             <div class="card-header">
                 <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
@@ -63,43 +62,28 @@
                 <div class="card-body">
                     <form class="form form-horizontal">
                         <div class="form-body">
-                            <h4 class="form-section"><i class="ft-user-check"></i> Listado de Clientes</h4>
-                            <table class="table table-striped table-bordered alt-pagination" id="tableA">
+                            <h4 class="form-section"><i class="ft-users"></i> Listado de Clientes Encontrados</h4>
+                            <table class="table table-striped table-bordered dynamic-height" id="tableA">
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Nombre</th>
-                                        <th>Codigo</th>
-                                        <th>Descripcion</th>
-                                        <th>Stock</th>
+                                        <th>Persona</th>
+                                        <th>CI</th>
+                                        <th>Cliente</th>
+                                        <th>NIT</th>
                                         <th>Accion</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr th:each="r , num: ${roles}">
-                                        <td th:text="${num.index + 1}"></td>
-                    
-                                        <td class="text-center">
-                                            <div class="btn-group mr-1 mb-1">
-                                                <button type="button" class="btn btn-secondary btn-min-width dropdown-toggle"
-                                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                                        class="la la-user"></i>
-                                                    Opciones</button>
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item" href="#">Editar</a>
-                                                    <a class="dropdown-item" href="#">Eliminar</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                <tbody id="tbodyA">
+                                    
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <th>#</th>
-                                        <th>Nombre</th>
-                                        <th>Codigo</th>
-                                        <th>Descripcion</th>
-                                        <th>Stock</th>
+                                        <th>Persona</th>
+                                        <th>CI</th>
+                                        <th>Cliente</th>
+                                        <th>NIT</th>
                                         <th>Accion</th>
                                     </tr>
                                 </tfoot>

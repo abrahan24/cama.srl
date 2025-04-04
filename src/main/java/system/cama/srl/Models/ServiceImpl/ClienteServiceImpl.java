@@ -38,5 +38,23 @@ public class ClienteServiceImpl implements ClienteService{
         // TODO Auto-generated method stub
         clienteDao.deleteById(id);
     }
+
+    @Override
+    public List<Cliente> findByNombresPersonaContaining(String nombres) {
+        // TODO Auto-generated method stub
+        return clienteDao.findByNombresPersonaContaining(nombres);
+    }
+
+    @Override
+    public List<Cliente> findByNitContaining(String nit) {
+        // TODO Auto-generated method stub
+        return clienteDao.findByNitContaining(nit);
+    }
+
+    @Override
+    public List<Cliente> findByCiPersonaContaining(String ci) {
+        // TODO Auto-generated method stub
+        return clienteDao.findByCiPersonaContaining(ci);
+    }
     
 }

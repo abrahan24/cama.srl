@@ -84,9 +84,9 @@
                     <form action="" method="post" id="form1">
                         <div class="row">
                             <div id="form_cliente" class="col-12">
-                               
+            
                             </div>
-                
+            
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
@@ -108,29 +108,29 @@
                                                     <h4 class="form-section"><i class="ft-search"></i>Seleccion de Productos</h4>
                                                     <div class="row">
                                                         <div class="col-6">
-                
+            
                                                             <div class="form-group row">
                                                                 <label class="col-md-3 label-control" for="projectinput1">Nombre
                                                                     Producto</label>
                                                                 <div class="col-md-9 mx-auto">
-                                                                    <input type="text" id="projectinput1" class="form-control"
-                                                                        placeholder="Nombre Producto" name="fname" required>
+                                                                    <input type="hidden" id="id_cliente" name="id_cliente" value="">
+                                                                    <input type="text" id="projectinput1" class="form-control" placeholder="Nombre Producto" name="fname" required>
                                                                 </div>
                                                             </div>
                                                             <div class="form-group row">
                                                                 <label class="col-md-3 label-control" for="projectinput1">Codigo
                                                                     Producto</label>
                                                                 <div class="col-md-9 mx-auto">
-                                                                    <input type="text" id="projectinput1" class="form-control"
-                                                                        placeholder="Codigo Producto" name="fname" required>
+                                                                    <input type="text" id="projectinput1" class="form-control" placeholder="Codigo Producto" name="fname" required>
                                                                 </div>
                                                             </div>
                                                             <div class="form-group row">
-                                                            
+            
                                                                 <div class="col-md-12 mx-auto">
                                                                     <h4 class="form-section"><i class="ft-check"></i>Productos
                                                                         Encontrados</h4>
-                                                                    <table class="table table-striped table-bordered alt-pagination">
+                                                                    <table class="table table-striped table-bordered alt-pagination"
+                                                                        id="tablePE">
                                                                         <thead>
                                                                             <tr>
                                                                                 <th>#</th>
@@ -144,16 +144,21 @@
                                                                         <tbody>
                                                                             <tr th:each="r , num: ${roles}">
                                                                                 <td th:text="${num.index + 1}"></td>
-                                                            
+            
                                                                                 <td class="text-center">
                                                                                     <div class="btn-group mr-1 mb-1">
-                                                                                        <button type="button" class="btn btn-secondary btn-min-width dropdown-toggle"
-                                                                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
+                                                                                        <button type="button"
+                                                                                            class="btn btn-secondary btn-min-width dropdown-toggle"
+                                                                                            data-toggle="dropdown"
+                                                                                            aria-haspopup="true"
+                                                                                            aria-expanded="false"><i
                                                                                                 class="la la-user"></i>
                                                                                             Opciones</button>
                                                                                         <div class="dropdown-menu">
-                                                                                            <a class="dropdown-item" href="#">Editar</a>
-                                                                                            <a class="dropdown-item" href="#">Eliminar</a>
+                                                                                            <a class="dropdown-item"
+                                                                                                href="#">Editar</a>
+                                                                                            <a class="dropdown-item"
+                                                                                                href="#">Eliminar</a>
                                                                                         </div>
                                                                                     </div>
                                                                                 </td>
@@ -174,14 +179,15 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-6">
-                
+            
                                                             <div class="form-group row">
-                
+            
                                                                 <div class="col-md-12 mx-auto">
-                                                                    <h4 class="form-section"><i class="ft-check-square"></i>Productos
+                                                                    <h4 class="form-section"><i
+                                                                            class="ft-check-square"></i>Productos
                                                                         Seleccionados</h4>
                                                                     <table class="table table-striped table-bordered dynamic-height"
-                                                                        id="tablaE">
+                                                                        id="tablaPS">
                                                                         <thead>
                                                                             <tr>
                                                                                 <th>#</th>
@@ -195,17 +201,19 @@
                                                                         <tbody>
                                                                             <tr th:each="r , num: ${roles}">
                                                                                 <td th:text="${num.index + 1}"></td>
-                
+            
                                                                                 <td class="text-center">
                                                                                     <div class="btn-group mr-1 mb-1">
                                                                                         <button type="button"
                                                                                             class="btn btn-secondary btn-min-width dropdown-toggle"
-                                                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                                                            data-toggle="dropdown"
+                                                                                            aria-haspopup="true"
                                                                                             aria-expanded="false"><i
                                                                                                 class="la la-user"></i>
                                                                                             Opciones</button>
                                                                                         <div class="dropdown-menu">
-                                                                                            <a class="dropdown-item" href="#">Editar</a>
+                                                                                            <a class="dropdown-item"
+                                                                                                href="#">Editar</a>
                                                                                             <a class="dropdown-item"
                                                                                                 href="#">Eliminar</a>
                                                                                         </div>
@@ -229,12 +237,9 @@
                                                         </div>
                                                     </div>
                                                     <div class="text-right">
-                                                        <button type="submit" class="btn btn-success">Realizar <i
-                                                                class="la la-thumbs-o-up position-right"></i></button>
-                                                        <button type="reset" class="btn btn-danger">Cancelar <i
-                                                                class="la la-refresh position-right"></i></button>
+                                                        <button type="submit" class="btn btn-success">Realizar Venta <i class="la la-thumbs-o-up position-right"></i></button>
+                                                        <button type="reset" class="btn btn-danger">Cancelar  <i class="la la-refresh position-right"></i></button>
                                                     </div>
-                
                                                 </div>
                                             </form>
                                         </div>
@@ -245,16 +250,6 @@
                     </form>
                 </section>
             </div>
-
-            <div class="modal fade text-left" id="formRol" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17"
-                aria-hidden="true">
-                <div class="modal-dialog modal-lg" role="document">
-                    <div id="modalRol" class="modal-content">
-
-                    </div>
-                </div>
-            </div>
-
 
         </div>
     </div>
