@@ -21,6 +21,12 @@ public class loginController {
     @Autowired
     private UsuarioService usuarioService;
     
+    @GetMapping("/")
+    public String getMethodName() {
+        return "Login/login";
+    }
+    
+
     @GetMapping("/login")
     public String vista_Login() {
 

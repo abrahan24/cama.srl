@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,10 +35,14 @@ public class Producto implements Serializable{
     private Long id_producto;
     private String nom_producto;
     private String cod_producto;
+    @Column(length = 200000)
+    private String descripcion_producto;
     private Double stock;
     private Double precio;
     private Date fecha_registro;
+    private String marca;
     private String estado_producto;
+    private String ruta_imagen;
     private Integer user_mod;
     private Date fecha_modificacion;
 

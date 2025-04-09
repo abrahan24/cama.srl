@@ -83,7 +83,6 @@ function cargarTabla(){
                     "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
                 },
             });
-
         },
         error: function () {
             console.log("Error al cargar el menú");

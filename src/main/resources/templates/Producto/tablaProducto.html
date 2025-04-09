@@ -1,0 +1,29 @@
+
+    <tr th:each="p , num: ${productos}">
+        <td th:text="${num.index + 1}"></td>
+        <td th:text="${p.cod_producto}"></td>
+        <td th:text="${p.descripcion_producto}"></td>
+        <td th:text="${p.marca}"></td>
+        <td th:text="${p.stock}"></td>
+        <td th:text="${p.precio}"></td>
+        <td class="text-center">
+            <th:block th:if="${p.ruta_imagen != null and !p.ruta_imagen.isEmpty()}">
+                <!-- Usa th:src sin @{} cuando la ruta ya es absoluta -->
+                <img th:src="${'uploads/'+p.ruta_imagen}" 
+                     style="max-width: 80px; max-height: 80px; cursor: pointer;"
+                     onerror="this.src='/images/placeholder.jpg'">
+            </th:block>
+            <span th:unless="${p.ruta_imagen != null and !p.ruta_imagen.isEmpty()}">Sin imagen</span>
+        </td>
+        <td class="text-center">
+            <div class="btn-group mr-1 mb-1">
+                <button type="button" class="btn btn-secondary btn-min-width dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false"><i class="la la-user"></i>
+                    Opciones</button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Editar</a>
+                    <a class="dropdown-item" href="#">Eliminar</a>
+                </div>
+            </div>
+        </td>
+    </tr>

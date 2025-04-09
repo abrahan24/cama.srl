@@ -69,7 +69,11 @@
 			<artifactId>jackson-core</artifactId>
 			<version>2.13.1</version> <!-- Version 2.x -->
 		</dependency>
-
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.11.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

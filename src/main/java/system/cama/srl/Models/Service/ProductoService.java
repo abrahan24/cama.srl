@@ -2,6 +2,8 @@ package system.cama.srl.Models.Service;
 
 import java.util.List;
 
+import org.springframework.data.repository.query.Param;
+
 import system.cama.srl.Models.Entity.Producto;
 
 public interface ProductoService {
@@ -13,4 +15,8 @@ public interface ProductoService {
 	public Producto findOne(Long id);
 
 	public void delete(Long id);
+
+	public List<Producto> obtenerProductosPorNombres(@Param("nom_producto") String nom_producto);
+
+	public List<Producto> obtenerProductosPorCodigoProducto(@Param("cod_producto") String cod_producto);
 }

@@ -38,5 +38,17 @@ public class ProductoServiceImpl implements ProductoService{
         // TODO Auto-generated method stub
         productoDao.deleteById(id);
     }
+
+    @Override
+    public List<Producto> obtenerProductosPorNombres(String nom_producto) {
+        // TODO Auto-generated method stub
+        return productoDao.obtenerProductosPorNombres(nom_producto);
+    }
+
+    @Override
+    public List<Producto> obtenerProductosPorCodigoProducto(String cod_producto) {
+        // TODO Auto-generated method stub
+        return productoDao.obtenerProductosPorCodigoProducto(cod_producto);
+    }
     
 }
