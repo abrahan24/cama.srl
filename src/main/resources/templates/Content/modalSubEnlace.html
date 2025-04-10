@@ -5,7 +5,7 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <form th:action="@{../registrarSubEnlace}" method="post" id="form1">
+    <form th:action="@{../registrarSubEnlace}" method="post" id="form2">
         <div class="modal-body">
             <label>Seleccione Enlace: </label>
             <div class="form-group">
@@ -47,7 +47,7 @@
         });
     });
 
-    $('#form1').submit(function (event) {
+    $('#form2').submit(function (event) {
         event.preventDefault();
 
         var form = document.getElementById("form1");

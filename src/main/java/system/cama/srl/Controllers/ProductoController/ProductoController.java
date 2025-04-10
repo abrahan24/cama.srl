@@ -75,12 +75,12 @@ public class ProductoController {
 
         try {
             Producto producto = new Producto();
-            producto.setNom_producto(nom_producto);
-            producto.setCod_producto(cod_producto);
+            producto.setNom_producto(nom_producto.toUpperCase());
+            producto.setCod_producto(cod_producto.toUpperCase());
             producto.setStock(stock);
             producto.setPrecio(precio);
-            producto.setMarca(marca);
-            producto.setDescripcion_producto(descripcion_producto);
+            producto.setMarca(marca.toUpperCase());
+            producto.setDescripcion_producto(descripcion_producto.toUpperCase());
             producto.setTipoProducto(tipoProductoService.findOne(id_tipo_producto));
             producto.setEstado_producto("A");
             producto.setFecha_registro(new Date());
