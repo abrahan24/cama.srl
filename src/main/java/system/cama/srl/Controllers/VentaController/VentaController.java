@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @Controller
@@ -119,6 +121,17 @@ public class VentaController {
         //TODO: process POST request
         
         return entity;
+    }
+    
+    @GetMapping("/realizarProforma")
+    public String realizarProforma(HttpServletRequest request) {
+        if (request.getSession().getAttribute("usuario") != null) {
+
+            return "Proforma/proforma";
+        } else {
+            return "redirect:/login";
+
+        }
     }
     
 }

@@ -1,0 +1,154 @@
+
+<div class="card">
+    <div class="card-header">
+        <!-- <h4 class="card-title">Gestion de Enlaces</h4> -->
+        <a class="heading-elements-toggle"><i class="la la-ellipsis-v font-medium-3"></i></a>
+        <div class="heading-elements">
+            <ul class="list-inline mb-0">
+                <li><a data-action="collapse"><i class="ft-minus"></i></a></li>
+                <li><a data-action="reload"><i class="ft-rotate-cw"></i></a></li>
+                <li><a data-action="expand"><i class="ft-maximize"></i></a></li>
+                <!-- <li><a data-action="close"><i class="ft-x"></i></a></li> -->
+            </ul>
+        </div>
+    </div>
+    <div class="card-content collapse show">
+        <div class="card-body">
+            <form class="form form-horizontal">
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 class="form-section"><i class="ft-search"></i>Datos Cliente</h4>
+                            <div class="form-group row">
+                                <label class="col-md-3 label-control" for="projectinput1">Nombre Cliente </label>
+                                <div class="col-md-9 mx-auto">
+                                    <input type="hidden" id="id_cliente" name="id_cliente" value="">
+                                    <input type="text" id="projectinput1" class="form-control" placeholder="Nombre Producto" name="fname" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <h4 class="form-section"><i class="ft-search"></i>Datos Mano de Obra</h4>
+                            <div id="mano-obra-container">
+                                <!-- Grupo inicial -->
+                                <div class="row mano-obra-group mb-2" data-index="0">
+                                    <!-- Columna 1: Detalle -->
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="label-control">Detalle o Descripción</label>
+                                            <input type="text" class="form-control" placeholder="Nombre Cliente" name="mano_obra[0][detalle]" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Columna 2: Precio -->
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="label-control">Precio (Bs)</label>
+                                            <input type="text" class="form-control" placeholder="Precio" name="mano_obra[0][precio]" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Columna 3: Unidad de Medida -->
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="label-control">Unidad de Medida</label>
+                                            <select class="select2 form-control block" name="mano_obra[0][unidad_medida]" style="width: 100%;" required>
+                                                <option value="" selected></option>
+                                                <option value="GLO">GLO - Global</option>
+                                                <option value="PC">P/C - Punto de Corriente</option>
+                                                <option value="PI">P/I - Punto de Iluminación</option>
+                                                <option value="PML">P/ML - Punto Metro Lineal</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Columna 4: Botón Eliminar -->
+                                    <div class="col-md-2 d-flex align-items-center">
+                                        <button type="button" class="btn btn-danger btn-sm remove-mano-obra" style="margin-top: 1.7rem;">
+                                            <i class="ft-x"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Botón para agregar más -->
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <button type="button" id="add-mano-obra" class="btn btn-primary">
+                                        <i class="ft-plus"></i> Agregar Mano de Obra
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    let manoObraCounter = 1;
+    
+    function initSelect2(element) {
+    element.find('select.select2').select2({
+        placeholder: "Seleccione...",
+        width: '100%' // Asegura que se vea bien dentro de clones
+    });
+}
+    
+    // Agregar nuevo grupo
+    $('#add-mano-obra').click(function () {
+        const $original = $('.mano-obra-group:first');
+
+        // Destruir Select2 en el original antes de clonar
+        $original.find('select.select2').select2('destroy');
+
+        // Clonar
+        const $template = $original.clone();
+
+        // Restaurar Select2 en el original después de clonar
+        $original.find('select.select2').select2({
+            placeholder: "Seleccione...",
+            width: '100%'
+        });
+
+        // Limpiar y renombrar
+        $template.attr('data-index', manoObraCounter);
+        $template.find('input, select').each(function () {
+            const $el = $(this);
+            const name = $el.attr('name');
+            if (name) {
+                const newName = name.replace(/\[\d+\]/, `[${manoObraCounter}]`);
+                $el.attr('name', newName).val('');
+            }
+
+            // Resetear Select2 en los selects
+            if ($el.is('select')) {
+                $el.val('').removeClass('select2-hidden-accessible').next('.select2').remove();
+            }
+        });
+
+        // Agregar el grupo clonado
+        $('#mano-obra-container').append($template);
+
+        // Inicializar Select2 solo en el nuevo template
+        initSelect2($template);
+
+        manoObraCounter++;
+    });
+    
+    // Eliminar grupo (delegación de eventos)
+    $('#mano-obra-container').on('click', '.remove-mano-obra', function() {
+        if ($('.mano-obra-group').length > 1) {
+            $(this).closest('.mano-obra-group').remove();
+        } else {
+            alert('Debe haber al menos un grupo de mano de obra.');
+        }
+    });
+    
+    // Inicializar Select2 en los elementos existentes al cargar
+    initSelect2(document);
+});
+</script>

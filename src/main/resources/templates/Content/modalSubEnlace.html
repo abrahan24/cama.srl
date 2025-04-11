@@ -12,7 +12,7 @@
                 <select class="select2 form-control block" id="responsive_single2" name="id_enlace" style="width: 100%;"
                     required>
                     <option value="" selected></option>
-                    <option th:each="e : ${enlaces}" th:value="${e.id_enlace}" th:text="${e.nom_enlace}"></option>
+                    <option th:each="e : ${enlaces}" th:value="${e.id_enlace}" th:text="${e.nom_enlace +' - '+ e.rol.nom_rol}"></option>
                     <!-- <option value="HI">Hawaii</option> -->
                 </select>
             </div>
