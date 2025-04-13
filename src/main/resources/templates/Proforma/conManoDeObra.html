@@ -22,8 +22,7 @@
                             <div class="form-group row">
                                 <label class="col-md-3 label-control" for="projectinput1">Nombre Cliente </label>
                                 <div class="col-md-9 mx-auto">
-                                    <input type="hidden" id="id_cliente" name="id_cliente" value="">
-                                    <input type="text" id="projectinput1" class="form-control" placeholder="Nombre Producto" name="fname" required>
+                                    <input type="text" id="nom_cliente" class="form-control" placeholder="Nombre Producto" name="nom_cliente" required>
                                 </div>
                             </div>
                         </div>
@@ -44,7 +43,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             <label class="label-control">Precio (Bs)</label>
-                                            <input type="text" class="form-control" placeholder="Precio" name="mano_obra[0][precio]" required>
+                                            <input type="number" min="0.00" class="form-control" placeholder="Precio" name="mano_obra[0][precio]" required>
                                         </div>
                                     </div>
                                     

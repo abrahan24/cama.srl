@@ -1,8 +1,33 @@
 
 $(document).ready(function() {
+    
     buscarClientesPorNombres();
+    buscarClientesPorCodigoProducto();
+    
     $("#tipo_proforma").select2({
       placeholder: "Seleccione...",
+    });
+
+    $('#nom_prod, #cod_prod').on('input', function () {
+        this.value = this.value.toUpperCase();
+    });
+
+    if ( $.fn.DataTable.isDataTable('#tablaPS') ) {
+        $('#tablaPS').DataTable().clear().destroy();
+    }
+    $('#btnGenerarProforma').on('click', generarProforma);
+
+    // Aquí actualizas el tbody o reconstruyes la tabla
+    
+    // Luego vuelves a inicializar si es necesario
+    $('#tablaPS').DataTable({
+        language: {
+            "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+        },
+        scrollY: '300px',
+        scrollCollapse: true,
+        paging: false,
+        responsive: true,
     });
 
     $('#tipo_proforma').change(function() {
@@ -10,13 +35,17 @@ $(document).ready(function() {
         const form = $('#form1');
         // Ejemplo de lógica condicional
         if(valor === 'CMO') {  //CMO Con Mano De Obra
-            form.attr('action', '/RegistrarVentaClienteNuevo');
+            form.attr('action', '/generarProformaConManoDeObra');
             // Ejemplo: mostrar campos adicionales
             $.ajax({
                 type: "POST",
                 url: "/manejarTipoProforma/"+valor,  // Asegúrate de que esta URL apunte a tu controlador en Spring Boot
                 success: function (response) {
                     $("#form_proforma").html(response);
+                    $('#nom_cliente').on('input', function () {
+                        this.value = this.value.toUpperCase();
+                    });
+                
                     // Destruir instancias previas si las hay, y volver a inicializar
                     $("#form_proforma .select2").each(function () {
                         if ($.fn.select2 && $(this).hasClass("select2-hidden-accessible")) {
@@ -69,13 +98,250 @@ $(document).ready(function() {
         }
     });
 
+      // Vector global para guardar los productos seleccionados
+      let productosSeleccionados = [];
 
+      // Evento al hacer clic en "Seleccionar"
+      $(document).on('click', '.seleccionar-producto', function () {
+          const fila = $(this).closest('tr'); // la fila actual
+  
+          // Obtener los valores de la fila
+          const producto = {
+              nombre: fila.find('td:eq(1)').text().trim(),
+              codigo: fila.find('td:eq(2)').text().trim(),
+              descripcion: fila.find('td:eq(3)').text().trim(),
+              stock: parseInt(fila.find('td:eq(4)').text().trim(), 10),
+              precio: parseFloat(fila.find('td:eq(5)').text().trim())
+          };
+  
+          // SweetAlert para ingresar cantidad
+          Swal.fire({
+              title: 'Ingrese la cantidad',
+              input: 'number',
+              inputAttributes: {
+                  min: 1,
+                  max: producto.stock,
+                  step: 1
+              },
+              inputValidator: (value) => {
+                  if (!value || value <= 0) {
+                      return 'Debe ingresar una cantidad válida';
+                  }
+                  if (value > producto.stock) {
+                      return `No hay suficiente stock. Disponible: ${producto.stock}`;
+                  }
+                  return null;
+              },
+              showCancelButton: true,
+              confirmButtonText: 'Agregar',
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  producto.cantidad = parseInt(result.value, 10);
+                  productosSeleccionados.push(producto);
+                  actualizarTablaSeleccionados();
+              }
+          });
+      });
+  
+ // Mostrar productos seleccionados en otra tabla
+ function actualizarTablaSeleccionados() {
+    
+     let tabla = $("#tablaPS").DataTable({
+       createdRow: function (row, data, dataIndex) {
+         $(row).css("font-size", "x-small");
+       },
+       autoWidth: false,
+       destroy: true, // si necesitas reinicializar
+       language: {
+         url: "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json",
+       },
+       scrollY: "300px",
+       scrollCollapse: true,
+       paging: false,
+       responsive: true,
+     });
+     tabla.clear().draw();
+     productosSeleccionados.forEach((p, index) => {
+         tabla.row
+             .add([
+                 index + 1,
+                 p.nombre,
+                 p.codigo,
+                 p.descripcion,
+                 p.precio,
+                 p.cantidad,
+                 `
+         <div class="btn-group mr-1 mb-1">
+            <button type="button" class="btn btn-icon btn-secondary dropdown-toggle"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="la la-gear"></i>
+            </button>
 
+            <div class="dropdown-menu">
+                <a class="dropdown-item btn-editar-cantidad" href="#" data-index="${index}">Editar Cantidad</a>
+                <a class="dropdown-item btn-eliminar-producto" href="#" data-index="${index}">Eliminar</a>
+            </div>
+        </div>
+        `,
+             ])
+             .draw(false);
+     });
+ }
+
+        // Eliminar producto del vector y actualizar tabla
+    $(document).on('click', '.btn-eliminar-producto', function (e) {
+        e.preventDefault();
+        const index = $(this).data('index');
+        productosSeleccionados.splice(index, 1);
+        actualizarTablaSeleccionados();
+    });
+
+    // Editar cantidad
+    $(document).on('click', '.btn-editar-cantidad', function (e) {
+        e.preventDefault();
+        const index = $(this).data('index');
+        const producto = productosSeleccionados[index];
+
+        Swal.fire({
+            title: `Editar cantidad para ${producto.nombre}`,
+            input: 'number',
+            inputLabel: 'Cantidad',
+            inputValue: producto.cantidad,
+            inputAttributes: {
+                min: 1
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Actualizar',
+            cancelButtonText: 'Cancelar',
+            inputValidator: (value) => {
+                if (!value || parseInt(value) < 1) {
+                    return 'La cantidad debe ser mayor a 0';
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                productosSeleccionados[index].cantidad = parseInt(result.value);
+                actualizarTablaSeleccionados();
+            }
+        });
+    });
+
+    function generarProforma() {
+        // Obtener datos del cliente
+        const nomCliente = $('input[name="nom_cliente"]').val();
+        
+        // Recoger datos de mano de obra
+        const manoObraData = [];
+        $('.mano-obra-group').each(function(index) {
+            const detalle = $(this).find('input[name^="mano_obra["][name$="[detalle]"]').val();
+            const precio = $(this).find('input[name^="mano_obra["][name$="[precio]"]').val();
+            const unidadMedida = $(this).find('select[name^="mano_obra["][name$="[unidad_medida]"]').val();
+            
+            manoObraData.push({
+                detalle: detalle,
+                precio: precio,
+                unidad_medida: unidadMedida
+            });
+        });
+        
+        // Recoger datos de productos de la tabla
+        const productosData = [];
+        $('#tablaPS tbody tr').each(function() {
+            const cells = $(this).find('td');
+            if (cells.length >= 6) { // Asegurarse que es una fila con datos
+                const nombre = cells.eq(1).text() || cells.eq(1).find('input').val();
+                const codigo = cells.eq(2).text() || cells.eq(2).find('input').val();
+                const descripcion = cells.eq(3).text() || cells.eq(3).find('input').val();
+                const precio = cells.eq(4).text() || cells.eq(4).find('input').val();
+                const cantidad = cells.eq(5).text() || cells.eq(5).find('input').val();
+                
+                if (nombre && cantidad && precio) {
+                    productosData.push({
+                        nombre: nombre,
+                        codigo: codigo || '',
+                        descripcion: descripcion || '',
+                        precio: precio,
+                        cantidad: cantidad
+                    });
+                }
+            }
+        });
+        
+        // Validar datos mínimos
+        if (!nomCliente) {
+            alert('El nombre del cliente es obligatorio');
+            return;
+        }
+        
+        if (manoObraData.length === 0 && productosData.length === 0) {
+            alert('Debe agregar al menos un ítem de mano de obra o productos');
+            return;
+        }
+        
+        // Enviar datos al servidor
+        const formData = new FormData();
+        formData.append('nom_cliente', nomCliente);
+        formData.append('mano_obra_json', JSON.stringify(manoObraData));
+        formData.append('productos_json', JSON.stringify(productosData));
+        
+        // Mostrar carga
+        const $btnGenerar = $('#btnGenerarProforma');
+        $btnGenerar.prop('disabled', true);
+        $btnGenerar.html('<i class="fa fa-spinner fa-spin"></i> Generando...');
+        
+        // Enviar mediante AJAX con jQuery
+        $.ajax({
+            url: '/generarProformaConManoDeObra',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(data) {
+                const blobUrl = URL.createObjectURL(new Blob([data], { type: 'application/pdf' }));
+                
+                // Intentar abrir en nueva pestaña
+                const pdfWindow = window.open(blobUrl, '_blank');
+                
+                // Fallback si bloquean popups
+                if (!pdfWindow) {
+                    const link = $('<a>')
+                        .attr('href', blobUrl)
+                        .attr('target', '_blank')
+                        .text('Abrir Proforma PDF')
+                        .css({
+                            display: 'block',
+                            margin: '10px',
+                            padding: '10px',
+                            background: '#007bff',
+                            color: 'white',
+                            textAlign: 'center',
+                            borderRadius: '5px'
+                        });
+                    
+                    $('body').append(link);
+                    alert('Por favor haga clic en el enlace para ver la proforma');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                alert('Error al generar la proforma: ' + error);
+            },
+            complete: function() {
+                $btnGenerar.prop('disabled', false);
+                $btnGenerar.html('<i class="fa fa-file-pdf-o"></i> Generar Proforma');
+            }
+        });
+    }
 });
 
+  
+
 function buscarClientesPorNombres() {
-    // Selecciona el input por su ID (#projectinput1) y asigna el evento change
-    $('#projectinput1').on('keyup', function() {
+    // Selecciona el input por su ID (#nom_prod) y asigna el evento change
+    $('#nom_prod').on('keyup', function() {
         // Obtiene el valor del input actual (usando $(this).val() es más directo)
         var nombres = $(this).val();
         
@@ -103,7 +369,72 @@ function buscarClientesPorNombres() {
                         paging: false,
                         responsive: true,
                     });
-                    $("#projectinput2").val('');
+                    $("#cod_prod").val('');
+                } else {
+                    console.log('No se encontraron resultados');
+                    $('#tablePEE tbodyPE').empty(); // Limpiar tabla si no hay resultados
+                    // Opcional: mostrar mensaje al usuario
+                    Swal.fire({
+                        title: 'No se encontraron coincidencias',
+                        icon: 'info',
+                        timer: 1500
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en la petición AJAX:', error);
+                if(xhr.status === 401) {
+                    Swal.fire({
+                        title: 'Su sesión ha expirado!',
+                        icon: "info",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.href = "/login";
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error en la búsqueda',
+                        text: 'Ocurrió un error al realizar la búsqueda',
+                        icon: 'error'
+                    });
+                }
+            }
+        });
+    });
+}
+
+function buscarClientesPorCodigoProducto() {
+    // Selecciona el input por su ID (#nom_prod) y asigna el evento change
+    $('#cod_prod').on('keyup', function() {
+        // Obtiene el valor del input actual (usando $(this).val() es más directo)
+        var cod_producto = $(this).val();
+        
+        // Validación básica - no hacer la petición si está vacío
+        if(!cod_producto || cod_producto.trim() === '') {
+            console.log('El campo nombres está vacío');
+            $('#tbodyPE').empty(); 
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/cagarTablaProformaPorCodigoProducto/" + encodeURIComponent(cod_producto), // Codifica el parámetro
+            success: function(response) {
+                // Por ejemplo, llenar una tabla o mostrar los resultados
+                // Ejemplo de cómo podrías mostrar los resultados:
+                if(response && response.length > 0) {
+                    $("#tablaPE").html(response);
+                    $('#tablePEE').DataTable({
+                        language: {
+                            "url": "https://cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json"
+                        },
+                        scrollY: '300px',
+                        scrollCollapse: true,
+                        paging: false,
+                        responsive: true,
+                    });
+                    $("#nom_prod").val('');
                 } else {
                     console.log('No se encontraron resultados');
                     $('#tablePEE tbodyPE').empty(); // Limpiar tabla si no hay resultados

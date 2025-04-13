@@ -1,0 +1,38 @@
+<table class="table table-striped table-bordered alt-pagination" id="tablePSE">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Codigo</th>
+            <th>Descripcion</th>
+            <th>Stock</th>
+            <th>Precio</th>
+            <th>Accion</th>
+        </tr>
+    </thead>
+    <tbody id="tbodyPE">
+        <tr th:each="p , num: ${productos}" style="font-size: smaller;">
+            <td th:text="${num.index + 1}"></td>
+            <td th:text="${p.nom_producto}"></td>
+            <td th:text="${p.cod_producto}"></td>
+            <td th:text="${p.descripcion_producto}"></td>
+            <td th:text="${p.stock}"></td>
+            <td th:text="${p.precio}"></td>
+            <td class="text-center">
+                <button type="button" class="btn btn-success btn-min-width mr-1 mb-1" style="font-size: small;" ><i class="la la-check"></i>
+                    Seleccionar</button>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Codigo</th>
+            <th>Descripcion</th>
+            <th>Stock</th>
+            <th>Precio</th>
+            <th>Accion</th>
+        </tr>
+    </tfoot>
+</table>
