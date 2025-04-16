@@ -148,7 +148,7 @@ $(document).ready(function() {
     
      let tabla = $("#tablaPS").DataTable({
        createdRow: function (row, data, dataIndex) {
-         $(row).css("font-size", "x-small");
+         $(row).css("font-size", "small");
        },
        autoWidth: false,
        destroy: true, // si necesitas reinicializar
@@ -227,22 +227,58 @@ $(document).ready(function() {
     });
 
     function generarProforma() {
+        const tipoProforma = $('#tipo_proforma').val();
+
+        if (!tipoProforma) {
+            Swal.fire({
+                title: '¡Campo requerido!',
+                text: 'Por favor, seleccione un tipo de proforma antes de continuar.',
+                icon: 'warning',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#3085d6',
+            }).then(() => {
+                $('#tipo_proforma').focus(); // Enfocar el select
+            });
+            return; // Detener la ejecución si no está seleccionado
+        }
         // Obtener datos del cliente
         const nomCliente = $('input[name="nom_cliente"]').val();
-        
-        // Recoger datos de mano de obra
+        const descuento = $('input[name="descuento"]').val();
+        const tipo_predio = $('select[name="tipo_predio"]').val();
         const manoObraData = [];
+        let manoObraValida = true;
+        
         $('.mano-obra-group').each(function(index) {
-            const detalle = $(this).find('input[name^="mano_obra["][name$="[detalle]"]').val();
-            const precio = $(this).find('input[name^="mano_obra["][name$="[precio]"]').val();
-            const unidadMedida = $(this).find('select[name^="mano_obra["][name$="[unidad_medida]"]').val();
-            
+            const detalleInput = $(this).find('input[name^="mano_obra["][name$="[detalle]"]');
+            const precioInput = $(this).find('input[name^="mano_obra["][name$="[precio]"]');
+            const unidadSelect = $(this).find('select[name^="mano_obra["][name$="[unidad_medida]"]');
+        
+            const detalle = detalleInput.val().trim();
+            const precio = precioInput.val().trim();
+            const unidadMedida = unidadSelect.val();
+        
+            if (!detalle || !precio || !unidadMedida) {
+                manoObraValida = false;
+        
+                Swal.fire({
+                    title: '¡Campo requerido!',
+                    text: 'Todos los campos de mano de obra son obligatorios.',
+                    icon: 'warning',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3085d6',
+                });
+        
+                return false; // Rompe el bucle each
+            }
+        
             manoObraData.push({
-                detalle: detalle,
+                detalle: detalle.toUpperCase(),
                 precio: precio,
                 unidad_medida: unidadMedida
             });
         });
+        
+        if (!manoObraValida) return;
         
         // Recoger datos de productos de la tabla
         const productosData = [];
@@ -269,18 +305,43 @@ $(document).ready(function() {
         
         // Validar datos mínimos
         if (!nomCliente) {
-            alert('El nombre del cliente es obligatorio');
+            Swal.fire({
+                title: '¡Nombre requerido!',
+                text: 'El nombre del cliente es obligatorio.',
+                icon: 'error',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#3085d6',
+            }).then(() => $('input[name="nom_cliente"]').focus());
+            return;
+        }
+
+        if (!descuento) {
+            Swal.fire({
+                title: '¡Descuento Requerido!',
+                text: 'El Campo Descuento es obligatorio.',
+                icon: 'error',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#3085d6',
+            }).then(() => $('input[name="descuento"]').focus());
             return;
         }
         
         if (manoObraData.length === 0 && productosData.length === 0) {
-            alert('Debe agregar al menos un ítem de mano de obra o productos');
+            Swal.fire({
+                title: '¡Datos incompletos!',
+                text: 'Debe agregar al menos un ítem (mano de obra o productos).',
+                icon: 'warning',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#3085d6',
+            });
             return;
         }
         
         // Enviar datos al servidor
         const formData = new FormData();
         formData.append('nom_cliente', nomCliente);
+        formData.append('descuento', descuento);
+        formData.append('tipo_predio', tipo_predio);
         formData.append('mano_obra_json', JSON.stringify(manoObraData));
         formData.append('productos_json', JSON.stringify(productosData));
         
@@ -335,6 +396,10 @@ $(document).ready(function() {
             }
         });
     }
+
+    $(document).on('input', 'input[name^="mano_obra["][name$="[detalle]"]', function () {
+        this.value = this.value.toUpperCase();
+    });
 });
 
   

@@ -43,6 +43,7 @@ public class Producto implements Serializable{
     private String marca;
     private String estado_producto;
     private String ruta_imagen;
+    private String unidad_medida;
     private Integer user_mod;
     private Date fecha_modificacion;
 

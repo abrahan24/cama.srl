@@ -6,17 +6,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -43,20 +40,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.export.SimpleExporterInput;
-import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
-import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
-import net.sf.jasperreports.export.SimplePdfReportConfiguration;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import net.sf.jasperreports.export.*;
-import system.cama.srl.Models.Entity.Producto;
 import system.cama.srl.Models.Service.ProductoService;
-import org.springframework.core.io.Resource; // Añade esta importación
-import org.springframework.core.io.ClassPathResource; // Y esta también
-import net.sf.jasperreports.engine.export.JRPdfExporter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.core.type.TypeReference;
+
 
 
 @Controller
@@ -132,6 +117,8 @@ public class ProformaController {
     @PostMapping("/generarProformaConManoDeObra")
     public ResponseEntity<byte[]> generarProformaConManoDeObra(
             @RequestParam String nom_cliente,
+            @RequestParam Double descuento,
+            @RequestParam String tipo_predio,
             @RequestParam String mano_obra_json,
             @RequestParam String productos_json) {
 
@@ -155,9 +142,25 @@ public class ProformaController {
                 throw new IllegalArgumentException("Debe incluir al menos un item de mano de obra o productos");
             }
 
+            
+            String logo = null;
+            
+            Path projectPath = Paths.get("").toAbsolutePath();
+
+            Path logoCamaElectric = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "app-assets", "images", "logo", "Cama_Electric_R.png");
+            Path logoCamaSRL = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "app-assets", "images", "logo", "Logo_Cama_SRL.jpg");
+
+            if (tipo_predio.equals("CE")) {
+                logo = logoCamaElectric.toString();
+            }else if (tipo_predio.equals("CSRL")) {
+                logo = logoCamaSRL.toString();
+            }
+
             // Preparar parámetros para el reporte
             Map<String, Object> params = new HashMap<>();
             params.put("NOM_CLIENTE", nom_cliente);
+            params.put("DESCUENTO", descuento);
+            params.put("LOGO", logo);
             params.put("FECHA", new Date());
 
             // Crear DataSources
@@ -190,9 +193,9 @@ public class ProformaController {
 
             // Definir rutas posibles para el reporte
             String[] possibleSubPaths = {
-                    "src/main/resources/Report/Proformas/proforma.jrxml",
-                    "Report/Proformas/proforma.jrxml",
-                    "../Report/Proformas/proforma.jrxml"
+                    "src/main/resources/Report/Proformas/proforma_Con_ManoDeObra.jrxml",
+                    "Report/Proformas/proforma_Con_ManoDeObra.jrxml",
+                    "../Report/Proformas/proforma_Con_ManoDeObra.jrxml"
             };
 
             InputStream reportStream = null;
@@ -216,7 +219,7 @@ public class ProformaController {
 
             // Generar el PDF
             try (InputStream finalStream = reportStream) {
-                System.out.println("Generando reporte desde: " + foundPath);
+                System.out.println("Generando Proforma desde: " + foundPath);
 
                 JasperReport jasperReport = JasperCompileManager.compileReport(finalStream);
                 JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, new JREmptyDataSource());
