@@ -35,7 +35,6 @@ $(document).ready(function() {
         const form = $('#form1');
         // Ejemplo de lógica condicional
         if(valor === 'CMO') {  //CMO Con Mano De Obra
-            form.attr('action', '/generarProformaConManoDeObra');
             // Ejemplo: mostrar campos adicionales
             $.ajax({
                 type: "POST",
@@ -71,16 +70,26 @@ $(document).ready(function() {
             });
         } else if(valor === 'SMO') {  //SMO Sin Mano De Obra
             // Ejemplo: hacer una consulta AJAX para datos del cliente
-            form.attr('action', '/registrarVentaClienteAntiguo');
             $.ajax({
                 type: "POST",
                 url: "/manejarTipoProforma/"+valor,  // Asegúrate de que esta URL apunte a tu controlador en Spring Boot
                 success: function (response) {
                     $("#form_proforma").html(response);
-                   
+                    $('#nom_cliente').on('input', function () {
+                        this.value = this.value.toUpperCase();
+                    });
+                     // Destruir instancias previas si las hay, y volver a inicializar
+                     $("#form_proforma .select2").each(function () {
+                        if ($.fn.select2 && $(this).hasClass("select2-hidden-accessible")) {
+                            $(this).select2('destroy');
+                        }
+                        $(this).select2({
+                            placeholder: "Seleccione...",
+                            width: '100%'
+                        });
+                    });
                 },
                 error: function () {
-                    console.log("Error al cargar el Formulario Cliente Antiguo");
                     Swal.fire({
                         title: 'Su Session Expiro!',
                         icon: "info",
@@ -92,10 +101,7 @@ $(document).ready(function() {
                     }, 1600);
                 }
             });
-        } else {
-            console.log('No hay selección');
-            // Ejemplo: ocultar secciones
-        }
+        } 
     });
 
       // Vector global para guardar los productos seleccionados
@@ -247,38 +253,41 @@ $(document).ready(function() {
         const tipo_predio = $('select[name="tipo_predio"]').val();
         const manoObraData = [];
         let manoObraValida = true;
-        
-        $('.mano-obra-group').each(function(index) {
-            const detalleInput = $(this).find('input[name^="mano_obra["][name$="[detalle]"]');
-            const precioInput = $(this).find('input[name^="mano_obra["][name$="[precio]"]');
-            const unidadSelect = $(this).find('select[name^="mano_obra["][name$="[unidad_medida]"]');
-        
-            const detalle = detalleInput.val().trim();
-            const precio = precioInput.val().trim();
-            const unidadMedida = unidadSelect.val();
-        
-            if (!detalle || !precio || !unidadMedida) {
-                manoObraValida = false;
-        
-                Swal.fire({
-                    title: '¡Campo requerido!',
-                    text: 'Todos los campos de mano de obra son obligatorios.',
-                    icon: 'warning',
-                    confirmButtonText: 'Entendido',
-                    confirmButtonColor: '#3085d6',
+
+        // Solo validar mano de obra si es tipo CMO
+        if (tipoProforma === 'CMO') {
+            $('.mano-obra-group').each(function (index) {
+                const detalleInput = $(this).find('input[name^="mano_obra["][name$="[detalle]"]');
+                const precioInput = $(this).find('input[name^="mano_obra["][name$="[precio]"]');
+                const unidadSelect = $(this).find('select[name^="mano_obra["][name$="[unidad_medida]"]');
+
+                const detalle = detalleInput.val().trim();
+                const precio = precioInput.val().trim();
+                const unidadMedida = unidadSelect.val();
+
+                if (!detalle || !precio || !unidadMedida) {
+                    manoObraValida = false;
+
+                    Swal.fire({
+                        title: '¡Campo requerido!',
+                        text: 'Todos los campos de mano de obra son obligatorios.',
+                        icon: 'warning',
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#3085d6',
+                    });
+
+                    return false; // Rompe el bucle each
+                }
+
+                manoObraData.push({
+                    detalle: detalle.toUpperCase(),
+                    precio: precio,
+                    unidad_medida: unidadMedida
                 });
-        
-                return false; // Rompe el bucle each
-            }
-        
-            manoObraData.push({
-                detalle: detalle.toUpperCase(),
-                precio: precio,
-                unidad_medida: unidadMedida
             });
-        });
-        
-        if (!manoObraValida) return;
+
+            if (!manoObraValida) return;
+        }
         
         // Recoger datos de productos de la tabla
         const productosData = [];
@@ -326,15 +335,28 @@ $(document).ready(function() {
             return;
         }
         
-        if (manoObraData.length === 0 && productosData.length === 0) {
-            Swal.fire({
-                title: '¡Datos incompletos!',
-                text: 'Debe agregar al menos un ítem (mano de obra o productos).',
-                icon: 'warning',
-                confirmButtonText: 'Entendido',
-                confirmButtonColor: '#3085d6',
-            });
-            return;
+        if (tipoProforma === 'CMO') {
+            if (manoObraData.length === 0 && productosData.length === 0) {
+                Swal.fire({
+                    title: '¡Datos incompletos!',
+                    text: 'Debe agregar al menos un ítem (mano de obra o productos).',
+                    icon: 'warning',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3085d6',
+                });
+                return;
+            }
+        } else {
+            if (productosData.length === 0) {
+                Swal.fire({
+                    title: '¡Datos incompletos!',
+                    text: 'Debe agregar al menos un producto.',
+                    icon: 'warning',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#3085d6',
+                });
+                return;
+            }
         }
         
         // Enviar datos al servidor
@@ -342,7 +364,12 @@ $(document).ready(function() {
         formData.append('nom_cliente', nomCliente);
         formData.append('descuento', descuento);
         formData.append('tipo_predio', tipo_predio);
-        formData.append('mano_obra_json', JSON.stringify(manoObraData));
+
+        // Solo agregar mano de obra si es tipo CMO
+        if (tipoProforma === 'CMO') {
+            formData.append('mano_obra_json', JSON.stringify(manoObraData));
+        }
+
         formData.append('productos_json', JSON.stringify(productosData));
         
         // Mostrar carga
@@ -350,9 +377,14 @@ $(document).ready(function() {
         $btnGenerar.prop('disabled', true);
         $btnGenerar.html('<i class="fa fa-spinner fa-spin"></i> Generando...');
         
+        // Definir la URL dependiendo del tipo de proforma
+        const urlAction = tipoProforma === 'CMO'
+        ? '/generarProformaConManoDeObra'
+        : '/generarProformaSinManoDeObra';
+
         // Enviar mediante AJAX con jQuery
         $.ajax({
-            url: '/generarProformaConManoDeObra',
+            url: urlAction,
             type: 'POST',
             data: formData,
             processData: false,

@@ -23,8 +23,6 @@
 	<parameter name="NOM_CLIENTE" class="java.lang.String"/>
 	<parameter name="PRODUCTOS_DS" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
 	<parameter name="TOTAL_PRODUCTOS" class="java.math.BigDecimal"/>
-	<parameter name="MANO_OBRA_DS" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
-	<parameter name="TOTAL_MANO_OBRA" class="java.math.BigDecimal"/>
 	<parameter name="TOTAL_GENERAL" class="java.math.BigDecimal"/>
 	<parameter name="DESCUENTO" class="java.lang.Double"/>
 	<parameter name="LOGO" class="java.lang.String"/>
@@ -273,7 +271,7 @@ Correo : cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 							</textElement>
 							<textFieldExpression><![CDATA[$F{precio}]]></textFieldExpression>
 						</textField>
-						<textField>
+						<textField pattern="###,##0.00">
 							<reportElement x="430" y="0" width="70" height="30" uuid="0f6af808-1720-49ad-9099-576ad6ccbad0">
 								<property name="com.jaspersoft.studio.unit.width" value="px"/>
 							</reportElement>
@@ -345,7 +343,7 @@ Correo : cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{TOTAL_GENERAL}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{TOTAL_PRODUCTOS}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" mode="Opaque" x="30" y="85" width="430" height="15" backcolor="#FFF308" uuid="7a476c19-08d0-415a-819c-f2813557ba35">
@@ -362,7 +360,7 @@ Correo : cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA["DESCUENTO DEL "+$P{DESCUENTO}+" %"]]></textFieldExpression>
 			</textField>
-			<textField pattern="###,##0.0">
+			<textField pattern="###,##0.00">
 				<reportElement positionType="Float" mode="Opaque" x="460" y="85" width="70" height="15" backcolor="#FFF308" uuid="8ad97ff0-86c6-4035-a5b6-928d66c15afd"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -373,7 +371,7 @@ Correo : cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{TOTAL_GENERAL}.multiply(
+				<textFieldExpression><![CDATA[$P{TOTAL_PRODUCTOS}.multiply(
    BigDecimal.valueOf($P{DESCUENTO}.doubleValue() / 100.0)
 ).setScale(2, java.math.RoundingMode.HALF_UP)]]></textFieldExpression>
 			</textField>
@@ -405,9 +403,9 @@ Correo : cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($P{TOTAL_GENERAL} != null && $P{DESCUENTO} != null)
-    ? $P{TOTAL_GENERAL}.subtract(
-        $P{TOTAL_GENERAL}.multiply(
+				<textFieldExpression><![CDATA[($P{TOTAL_PRODUCTOS} != null && $P{DESCUENTO} != null)
+    ? $P{TOTAL_PRODUCTOS}.subtract(
+       $P{TOTAL_PRODUCTOS}.multiply(
             BigDecimal.valueOf($P{DESCUENTO}.doubleValue() / 100.0)
         ).setScale(2, java.math.RoundingMode.HALF_UP)
     )

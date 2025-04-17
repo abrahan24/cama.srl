@@ -246,4 +246,113 @@ public class ProformaController {
                     "Error inesperado: " + e.getMessage());
         }
     }
+
+    @PostMapping("/generarProformaSinManoDeObra")
+    public ResponseEntity<byte[]> generarProformaSinManoDeObra(
+            @RequestParam String nom_cliente,
+            @RequestParam Double descuento,
+            @RequestParam String tipo_predio,
+            @RequestParam String productos_json) {
+
+        try {
+            // Validación básica de parámetros
+            if (nom_cliente == null || nom_cliente.trim().isEmpty()) {
+                throw new IllegalArgumentException("El nombre del cliente es requerido");
+            }
+
+            // Convertir JSON a objetos Java
+            ObjectMapper objectMapper = new ObjectMapper();
+            
+            List<Map<String, Object>> productosList = objectMapper.readValue(productos_json,
+                    new TypeReference<List<Map<String, Object>>>() {
+                    });
+
+            
+            String logo = "";
+            
+            Path projectPath = Paths.get("").toAbsolutePath();
+
+            Path logoCamaElectric = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "app-assets", "images", "logo", "Cama_Electric_R.png");
+            Path logoCamaSRL = Paths.get(projectPath.toString(), "src", "main", "resources", "static", "app-assets", "images", "logo", "Logo_Cama_SRL.jpg");
+
+            if (tipo_predio.equals("CE")) {
+                logo = logoCamaElectric.toString();
+            }else if (tipo_predio.equals("CSRL")) {
+                logo = logoCamaSRL.toString();
+            }
+
+            // Preparar parámetros para el reporte
+            Map<String, Object> params = new HashMap<>();
+            params.put("NOM_CLIENTE", nom_cliente);
+            params.put("DESCUENTO", descuento);
+            params.put("LOGO", logo);
+            params.put("FECHA", new Date());
+
+            // Crear DataSources
+            JRBeanCollectionDataSource productosDS = new JRBeanCollectionDataSource(productosList);
+
+            params.put("PRODUCTOS_DS", productosDS);
+
+            // Calcular totales con manejo de nulos
+
+            BigDecimal totalProductos = productosList.stream()
+                    .map(p -> {
+                        BigDecimal precio = new BigDecimal(p.getOrDefault("precio", "0").toString());
+                        BigDecimal cantidad = new BigDecimal(p.getOrDefault("cantidad", "1").toString());
+                        return precio.multiply(cantidad);
+                    })
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            params.put("TOTAL_PRODUCTOS", totalProductos);
+
+            // Obtener ruta base del proyecto
+            Path rootPath = Paths.get("");
+            Path rootAbsolutPath = rootPath.toAbsolutePath();
+
+            String rutaArchivo = "Report/Proformas/proforma_Sin_ManoDeObra.jrxml";
+
+            InputStream reportStream = null;
+            String foundPath = null;
+
+            String fullPath = rootAbsolutPath.toString() + "/" + rutaArchivo;
+            File file = new File(fullPath);
+            if (file.exists()) {
+                foundPath = fullPath;
+                reportStream = new FileInputStream(file);
+            }
+
+            if (reportStream == null) {
+                throw new FileNotFoundException(
+                        "No se encontró el archivo proforma.jrxml en ninguna ubicación conocida");
+            }
+
+            // Generar el PDF
+            try (InputStream finalStream = reportStream) {
+                System.out.println("Generando Proforma desde: " + foundPath);
+
+                JasperReport jasperReport = JasperCompileManager.compileReport(finalStream);
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, new JREmptyDataSource());
+
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=proforma.pdf")
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .body(outputStream.toByteArray());
+            }
+
+        } catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error en el formato JSON: " + e.getMessage());
+        } catch (FileNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Archivo de reporte no encontrado: " + e.getMessage());
+        } catch (JRException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error al generar el PDF: " + e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error inesperado: " + e.getMessage());
+        }
+    }
 }
