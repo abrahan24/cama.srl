@@ -1,11 +1,10 @@
-<div th:fragment="mainMenu" class="main-menu menu-fixed menu-dark menu-accordion menu-shadow"
-    data-scroll-to-active="true">
+<div th:fragment="mainMenu" class="main-menu menu-fixed menu-dark menu-accordion menu-shadow" data-scroll-to-active="true">
     <div class="main-menu-content">
         <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
             <li th:each="e : ${enlaces}" class="nav-item">
                 <a th:href="${e.ruta_enlace != null and e.ruta_enlace != '' ? e.ruta_enlace : '#'}">
                     <i th:class="${e.icono_enlace}"></i>
-                    <span th:class="${'menu-title'}"  th:text="${e.nom_enlace}"></span>                    
+                    <span th:class="${'menu-title'}" th:text="${e.nom_enlace}"></span>
                 </a>
                 <ul class="menu-content">
                     <li th:each="se : ${e.subEnlaces}">

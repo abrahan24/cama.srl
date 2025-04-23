@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,7 +42,9 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import system.cama.srl.Models.Entity.Usuario;
 import system.cama.srl.Models.Service.ProductoService;
+import system.cama.srl.Models.Service.SubEnlaceService;
 
 
 
@@ -52,6 +56,24 @@ public class ProformaController {
 
     @Autowired
     private ProductoService productoService;
+
+    @Autowired
+    private SubEnlaceService subEnlaceService;
+
+     @GetMapping("/realizarProforma")
+    public String realizarProforma(HttpServletRequest request,Model model) {
+        if (request.getSession().getAttribute("usuario") != null) {
+
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+
+            model.addAttribute("enlaces", usuario.getRol().getEnlaces());
+            model.addAttribute("subEnlaces", subEnlaceService.obtenerSubEnlacesPorIdUsuario(usuario.getId_usuario()));
+            return "Proforma/proforma";
+        } else {
+            return "redirect:/login";
+
+        }
+    }
     
     @PostMapping("/manejarTipoProforma/{tipo_proforma}")
     public ResponseEntity< String >postMethodName(@PathVariable(name = "tipo_proforma") String tipo_proforma,HttpServletRequest request) {

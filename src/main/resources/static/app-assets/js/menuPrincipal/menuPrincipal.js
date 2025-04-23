@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    menuPrincipal();
+    // menuPrincipal();
 });
 
 function menuPrincipal() {

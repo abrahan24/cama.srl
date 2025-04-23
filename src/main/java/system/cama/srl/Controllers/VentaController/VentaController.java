@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import jakarta.servlet.http.HttpServletRequest;
 import system.cama.srl.Models.Entity.Cliente;
+import system.cama.srl.Models.Entity.Usuario;
 import system.cama.srl.Models.Service.ClienteService;
+import system.cama.srl.Models.Service.SubEnlaceService;
 import system.cama.srl.Models.Service.VentaService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,10 +36,17 @@ public class VentaController {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private SubEnlaceService subEnlaceService;
+
     @GetMapping("/registroVenta")
     public String registro_venta(Model model, HttpServletRequest request) {
         if (request.getSession().getAttribute("usuario") != null) {
 
+              Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+
+            model.addAttribute("enlaces", usuario.getRol().getEnlaces());
+            model.addAttribute("subEnlaces", subEnlaceService.obtenerSubEnlacesPorIdUsuario(usuario.getId_usuario()));
             return "Venta/venta";
         } else {
             return "redirect:/login";
@@ -123,15 +132,5 @@ public class VentaController {
         return entity;
     }
     
-    @GetMapping("/realizarProforma")
-    public String realizarProforma(HttpServletRequest request) {
-        if (request.getSession().getAttribute("usuario") != null) {
-
-            return "Proforma/proforma";
-        } else {
-            return "redirect:/login";
-
-        }
-    }
     
 }

@@ -21,6 +21,12 @@ public class loginController {
     @Autowired
     private UsuarioService usuarioService;
     
+    @GetMapping("/index")
+    public String index() {
+        return "index";
+    }
+    
+
     @GetMapping("/")
     public String getMethodName() {
         return "Login/login";

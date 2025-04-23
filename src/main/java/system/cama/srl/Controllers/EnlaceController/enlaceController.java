@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import system.cama.srl.Models.Entity.Enlace;
 import system.cama.srl.Models.Entity.Rol;
 import system.cama.srl.Models.Entity.SubEnlace;
+import system.cama.srl.Models.Entity.Usuario;
 import system.cama.srl.Models.Service.EnlaceService;
 import system.cama.srl.Models.Service.RolService;
 import system.cama.srl.Models.Service.SubEnlaceService;
@@ -46,6 +47,10 @@ public class enlaceController {
 
             model.addAttribute("roles", rolService.findAll());
 
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+
+            model.addAttribute("enlaces", usuario.getRol().getEnlaces());
+            model.addAttribute("subEnlaces", subEnlaceService.obtenerSubEnlacesPorIdUsuario(usuario.getId_usuario()));
             return "Enlace/enlace";
         }else{
             return "redirect:/login";

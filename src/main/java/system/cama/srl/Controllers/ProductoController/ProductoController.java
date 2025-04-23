@@ -23,7 +23,9 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import jakarta.servlet.http.HttpServletRequest;
 import system.cama.srl.Models.Entity.Enlace;
 import system.cama.srl.Models.Entity.Producto;
+import system.cama.srl.Models.Entity.Usuario;
 import system.cama.srl.Models.Service.ProductoService;
+import system.cama.srl.Models.Service.SubEnlaceService;
 import system.cama.srl.Models.Service.TipoProductoService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,12 +45,18 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
     
+    @Autowired
+    private SubEnlaceService subEnlaceService;
 
     @GetMapping("/gestionProductos")
     public String gestionProductos(Model model, HttpServletRequest request) {
         if (request.getSession().getAttribute("usuario") != null) {
 
             model.addAttribute("tiposP", tipoProductoService.findAll());
+              Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+
+            model.addAttribute("enlaces", usuario.getRol().getEnlaces());
+            model.addAttribute("subEnlaces", subEnlaceService.obtenerSubEnlacesPorIdUsuario(usuario.getId_usuario()));
             return "Producto/producto";
         } else {
             return "redirect:/login";
