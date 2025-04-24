@@ -211,7 +211,6 @@ public class ProductoController {
             producto.setDescripcion_producto(descripcion_producto.toUpperCase());
             producto.setTipoProducto(tipoProductoService.findOne(id_tipo_producto));
             producto.setEstado_producto("A");
-            producto.setFecha_registro(new Date());
             producto.setFecha_modificacion(new Date());
             producto.setUser_mod(usuario.getId_usuario().intValue());
             // Procesar la imagen
