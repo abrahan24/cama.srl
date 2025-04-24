@@ -41,7 +41,7 @@ $(document).ready(function() {
                 url: "/manejarTipoProforma/"+valor,  // Asegúrate de que esta URL apunte a tu controlador en Spring Boot
                 success: function (response) {
                     $("#form_proforma").html(response);
-                    $('#nom_cliente').on('input', function () {
+                    $('#nom_cliente , #nota').on('input', function () {
                         this.value = this.value.toUpperCase();
                     });
                 
@@ -75,7 +75,7 @@ $(document).ready(function() {
                 url: "/manejarTipoProforma/"+valor,  // Asegúrate de que esta URL apunte a tu controlador en Spring Boot
                 success: function (response) {
                     $("#form_proforma").html(response);
-                    $('#nom_cliente').on('input', function () {
+                    $('#nom_cliente , #nota').on('input', function () {
                         this.value = this.value.toUpperCase();
                     });
                      // Destruir instancias previas si las hay, y volver a inicializar
@@ -250,6 +250,7 @@ $(document).ready(function() {
         // Obtener datos del cliente
         const nomCliente = $('input[name="nom_cliente"]').val();
         const descuento = $('input[name="descuento"]').val();
+        const nota = $('input[name="nota"]').val();
         const tipo_predio = $('select[name="tipo_predio"]').val();
         const manoObraData = [];
         let manoObraValida = true;
@@ -334,6 +335,16 @@ $(document).ready(function() {
             }).then(() => $('input[name="descuento"]').focus());
             return;
         }
+        if (!nota) {
+            Swal.fire({
+                title: '¡Nota Requerido!',
+                text: 'El Campo Nota es obligatorio.',
+                icon: 'error',
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#3085d6',
+            }).then(() => $('input[name="nota"]').focus());
+            return;
+        }
         
         if (tipoProforma === 'CMO') {
             if (manoObraData.length === 0 && productosData.length === 0) {
@@ -363,6 +374,7 @@ $(document).ready(function() {
         const formData = new FormData();
         formData.append('nom_cliente', nomCliente);
         formData.append('descuento', descuento);
+        formData.append('nota', nota);
         formData.append('tipo_predio', tipo_predio);
 
         // Solo agregar mano de obra si es tipo CMO
@@ -377,6 +389,17 @@ $(document).ready(function() {
         $btnGenerar.prop('disabled', true);
         $btnGenerar.html('<i class="fa fa-spinner fa-spin"></i> Generando...');
         
+        toastr.success(
+            "Generando Proforma...",
+            { 
+                showMethod: "slideDown", 
+                hideMethod: "slideUp", 
+                timeOut: 0, // Desactiva el cierre automático
+                closeButton: false,
+                progressBar: true 
+            }
+        );
+       
         // Definir la URL dependiendo del tipo de proforma
         const urlAction = tipoProforma === 'CMO'
         ? '/generarProformaConManoDeObra'
@@ -417,10 +440,14 @@ $(document).ready(function() {
                     $('body').append(link);
                     alert('Por favor haga clic en el enlace para ver la proforma');
                 }
+                // Cerrar toast y mostrar confirmación
+                toastr.clear();
+                toastr.success("Proforma generada correctamente", { timeOut: 2000 });
             },
             error: function(xhr, status, error) {
                 console.error('Error:', error);
-                alert('Error al generar la proforma: ' + error);
+                toastr.clear();
+                toastr.error('Error al generar la proforma: ' + error, { timeOut: 3000 });
             },
             complete: function() {
                 $btnGenerar.prop('disabled', false);
@@ -428,7 +455,7 @@ $(document).ready(function() {
             }
         });
     }
-
+  
     $(document).on('input', 'input[name^="mano_obra["][name$="[detalle]"]', function () {
         this.value = this.value.toUpperCase();
     });

@@ -139,6 +139,7 @@ public class ProformaController {
     @PostMapping("/generarProformaConManoDeObra")
     public ResponseEntity<byte[]> generarProformaConManoDeObra(
             @RequestParam String nom_cliente,
+            @RequestParam String nota,
             @RequestParam Double descuento,
             @RequestParam String tipo_predio,
             @RequestParam String mano_obra_json,
@@ -163,7 +164,6 @@ public class ProformaController {
             if (manoObraList.isEmpty() && productosList.isEmpty()) {
                 throw new IllegalArgumentException("Debe incluir al menos un item de mano de obra o productos");
             }
-
             
             String logo = null;
             
@@ -180,9 +180,10 @@ public class ProformaController {
 
             // Preparar parámetros para el reporte
             Map<String, Object> params = new HashMap<>();
-            params.put("NOM_CLIENTE", nom_cliente);
+            params.put("NOM_CLIENTE", nom_cliente.toUpperCase());
             params.put("DESCUENTO", descuento);
             params.put("LOGO", logo);
+            params.put("NOTA", nota.toUpperCase());
             params.put("FECHA", new Date());
 
             // Crear DataSources
@@ -273,6 +274,7 @@ public class ProformaController {
     public ResponseEntity<byte[]> generarProformaSinManoDeObra(
             @RequestParam String nom_cliente,
             @RequestParam Double descuento,
+            @RequestParam String nota,
             @RequestParam String tipo_predio,
             @RequestParam String productos_json) {
 
@@ -305,8 +307,9 @@ public class ProformaController {
 
             // Preparar parámetros para el reporte
             Map<String, Object> params = new HashMap<>();
-            params.put("NOM_CLIENTE", nom_cliente);
+            params.put("NOM_CLIENTE", nom_cliente.toUpperCase());
             params.put("DESCUENTO", descuento);
+            params.put("NOTA", nota.toUpperCase());
             params.put("LOGO", logo);
             params.put("FECHA", new Date());
 

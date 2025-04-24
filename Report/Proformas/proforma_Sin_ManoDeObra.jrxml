@@ -26,6 +26,7 @@
 	<parameter name="TOTAL_GENERAL" class="java.math.BigDecimal"/>
 	<parameter name="DESCUENTO" class="java.lang.Double"/>
 	<parameter name="LOGO" class="java.lang.String"/>
+	<parameter name="NOTA" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -559,19 +560,13 @@ Correo : cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="56" y="100" width="460" height="40" uuid="3ec50453-4ec5-4fa5-80cd-44eafb6ce14e"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="9"/>
+			<textField>
+				<reportElement x="52" y="100" width="469" height="40" uuid="4e78d13b-4447-4636-92fe-a485194c1d62"/>
+				<textElement textAlignment="Center" markup="html">
+					<font size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[NOTA.- GARANTIA DE LA INSTALACION DE 1 AÑO CON SU PRIMER MATENIMIENTO DE LAS MISMAS LA CANCELACION DE UN 50% Y POSTERIOR A LA INSTALACION Y PRUEBA DE FUNCIONAMIENTO EL 50 % (CABLE Y CANALETAS VARIABLES SEGÚN UBICACIÓN DE LAS MISMAS)]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["<b>NOTA .- </b> "+ $P{NOTA}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 </jasperReport>

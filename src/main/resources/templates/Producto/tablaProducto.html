@@ -9,7 +9,7 @@
             <th>Stock</th>
             <th>Precio</th>
             <th>Imagen</th>
-            <th>Accion</th>
+            <th class="no-export">Acción</th>
         </tr>
     </thead>
     <tbody id="tbodyP">
@@ -23,7 +23,6 @@
             <td th:text="${p.precio}"></td>
             <td class="text-center">
                 <th:block th:if="${p.ruta_imagen != null and !p.ruta_imagen.isEmpty()}">
-                    <!-- Usa th:src sin @{} cuando la ruta ya es absoluta -->
                     <img th:src="${'uploads/'+p.ruta_imagen}" 
                          style="max-width: 80px; max-height: 80px; cursor: pointer;"
                          onerror="this.src='/images/placeholder.jpg'">
@@ -36,7 +35,8 @@
                         aria-haspopup="true" aria-expanded="false"><i class="la la-user"></i>
                         Opciones</button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Editar</a>
+                        <a type="button" class="dropdown-item" data-toggle="modal" data-target="#success" href="#"
+                            th:attr="onclick='cargarModalProducto(' + ${p.id_producto} + ')'">Editar</a>
                         <a class="dropdown-item" href="#">Eliminar</a>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
             <th>Stock</th>
             <th>Precio</th>
             <th>Imagen</th>
-            <th>Accion</th>
+            <th class="no-export">Acción</th>
         </tr>
     </tfoot>
 </table>

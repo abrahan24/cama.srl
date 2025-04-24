@@ -28,6 +28,7 @@
 	<parameter name="TOTAL_GENERAL" class="java.math.BigDecimal"/>
 	<parameter name="DESCUENTO" class="java.lang.Double"/>
 	<parameter name="LOGO" class="java.lang.String"/>
+	<parameter name="NOTA" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -681,7 +682,7 @@ Correo : cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 		</band>
 	</columnFooter>
 	<pageFooter>
-		<band height="143" splitType="Stretch">
+		<band height="133" splitType="Stretch">
 			<staticText>
 				<reportElement x="189" y="0" width="194" height="20" uuid="cecb8fb7-5602-494c-af8a-c8ba6559a21b"/>
 				<box>
@@ -791,19 +792,13 @@ Correo : cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 				<textElement verticalAlignment="Middle"/>
 				<text><![CDATA[cama.electric@gmail.com - a.j.cama.srl@gmail.com]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="56" y="100" width="460" height="40" uuid="3ec50453-4ec5-4fa5-80cd-44eafb6ce14e"/>
-				<box>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="9"/>
+			<textField>
+				<reportElement x="51" y="100" width="470" height="30" uuid="e6a4192d-4869-46f9-9aee-b8850c95c82a"/>
+				<textElement textAlignment="Center" markup="html">
+					<font size="9"/>
 				</textElement>
-				<text><![CDATA[NOTA.- GARANTIA DE LA INSTALACION DE 1 AÑO CON SU PRIMER MATENIMIENTO DE LAS MISMAS LA CANCELACION DE UN 50% Y POSTERIOR A LA INSTALACION Y PRUEBA DE FUNCIONAMIENTO EL 50 % (CABLE Y CANALETAS VARIABLES SEGÚN UBICACIÓN DE LAS MISMAS)]]></text>
-			</staticText>
+				<textFieldExpression><![CDATA["<b>NOTA .- </b> "+ $P{NOTA}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 </jasperReport>

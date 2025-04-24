@@ -1,0 +1,178 @@
+<div class="modal-header bg-success white">
+    <h4 class="modal-title white" id="myModalLabel9"><i class="la la-tree"></i> Formulario para Editar Producto</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form th:action="@{../editarProducto}" id="form_producto" method="post"></form>
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-3 label-control" for="userinput1">Nombre Producto</label>
+                    <div class="col-md-9 mx-auto">
+                        <input type="hidden" name="id_producto" id="id_producto" th:value="${producto.id_producto}">
+                        <input type="text" id="userinput1" class="form-control border-primary" placeholder="Nombre Producto" name="nom_producto"
+                            th:value="${producto.nom_producto}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-3 label-control" for="userinput2">Codigo Producto</label>
+                    <div class="col-md-9 mx-auto">
+                        <input type="text" id="userinput2" class="form-control border-primary" placeholder="Codigo Producto" name="cod_producto"
+                            th:value="${producto.cod_producto}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-3 label-control" for="userinput1">Stock a Ingresar</label>
+                    <div class="col-md-9 mx-auto">
+                        <input type="number" id="userinput1" class="form-control border-primary" placeholder="Stock a Ingresar" name="stock"
+                            th:value="${producto.stock}" min="0" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-3 label-control" for="userinput2">Precio (Bs)</label>
+                    <div class="col-md-9 mx-auto">
+                        <input type="number" id="userinput2" class="form-control border-primary" placeholder="Precio" name="precio"
+                            th:value="${producto.precio}" step="0.01" min="0" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-3 label-control" for="userinput1">Marca del Producto</label>
+                    <div class="col-md-9 mx-auto">
+                        <input type="text" id="userinput1" class="form-control border-primary" placeholder="Marca del Producto" name="marca"
+                            th:value="${producto.marca}" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-3 label-control" for="userinput8">Descripcion del Producto</label>
+                    <div class="col-md-9 mx-auto">
+                        <textarea id="userinput8" rows="4" class="form-control border-primary" name="descripcion_producto" required
+                            th:text="${producto.descripcion_producto}"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-3 label-control" for="userinput8">Tipo de Producto</label>
+                    <div class="col-md-9 mx-auto">
+                        <select class="select2 form-control" name="id_tipo_producto" id="id_tipo_producto" required>
+
+                            <option th:each="tp : ${tiposP}" th:if="${tp.estado_tipo_producto != 'X'}" th:value="${tp.id_tipo_producto}"
+                                th:text="${tp.nom_tipo_producto}"
+                                th:selected="${producto.tipoProducto != null} ? ${tp.id_tipo_producto == producto.tipoProducto.id_tipo_producto} : false">
+                            </option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="col-md-3 label-control">Seleccionar Imagen</label>
+                    <div class="col-md-9 mx-auto">
+                        
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="imagenProductoInput" name="imagenProductoInput" accept="image/*"
+                                th:attr="required=${producto.ruta_imagen == null}">
+                                <label class="custom-file-label" for="imagenProductoInput" aria-describedby="imagenProductoInput"
+                                th:text="${producto.ruta_imagen != null ? 'Imagen almacenada ' : 'Seleccionar imagen'}">
+                         </label>
+                        </div>
+            
+                        <!-- Vista previa de la imagen actual -->
+                        <div id="contenedorVistaPreviaProducto" class="mt-2" 
+                             th:if="${producto.ruta_imagen != null}" style="display:block;">
+                            <img id="imagenVistaPreviaProducto"
+                                 th:src="${'uploads/' + producto.ruta_imagen}"
+                                 alt="Vista previa"
+                                 style="max-width: 100px; max-height: 100px; cursor: pointer;" />
+                            <button type="button" class="btn btn-danger btn-sm mt-1" id="quitarImagenProducto">Quitar imagen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn grey btn-outline-secondary" data-dismiss="modal">Cerrar</button>
+    <button type="button" class="btn btn-outline-success">Guardar Cambios</button>
+</div>
+
+<script>
+    $(document).ready(function(){
+        
+        $("#imagenProductoInput").on("change", function () {
+            const file = this.files[0];
+            var fileName = $(this).val().split('\\').pop(); // Extrae solo el nombre del archivo
+            $(this).next('.custom-file-label').text(fileName || 'Seleccionar imagen');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#imagenVistaPreviaProducto").attr("src", e.target.result);
+                    $("#contenedorVistaPreviaProducto").show();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        $("#quitarImagenProducto").on("click", function () {
+            $("#contenedorVistaPreviaProducto").hide();
+            $("#imagenVistaPreviaProducto").attr("src", "#");
+            $("#imagenProductoInput").val(""); // limpia el input
+            $("#imagenProductoInput").next(".custom-file-label").text("Seleccionar imagen");
+        });
+
+        $('#nom_pro, #cod_pro').on('input', function () {
+            this.value = this.value.toUpperCase();
+        });
+
+        $('#form_producto').submit(function (event) {
+            event.preventDefault();
+
+            var form = document.getElementById("form_producto");
+            var formData = new FormData(form); // ✅ Esto incluye el archivo
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: formData,
+                processData: false,  // 🔥 ¡Importante! Evita que jQuery procese los datos
+                contentType: false,   // 🔥 ¡Importante! Deja que el navegador establezca el Content-Type
+                success: function (response) {
+                    var mensaje = response;
+                    if (mensaje === "1") {
+                        Swal.fire({
+                            title: 'Producto Editado Con Exito!',
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        // Opcional: Resetear el formulario después del éxito
+                        form.reset();
+                        $('#id_tipo_producto').val(null).trigger('change');
+                        // Ocultar vista previa de la imagen (si aplica)
+                        $('#preview-container').hide();
+                        toastr.success("Producto editado correctamente", { timeOut: 2000 });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Ha ocurrido un error. Por favor, intenta nuevamente.');
+                    console.error("Error en AJAX:", error);
+                }
+            });
+        });
+    }); 
+</script>

@@ -167,4 +167,100 @@ public class ProductoController {
         }
     }
 
+    @PostMapping("/cargarModalProducto/{id_producto}")
+    public ResponseEntity< String> postMethodName(@PathVariable(name = "id_producto")Long id_producto, HttpServletRequest request) {
+        //TODO: process POST request
+        if (request.getSession().getAttribute("usuario") != null) {
+
+            Context context = new Context();
+            context.setVariable("producto", productoService.findOne(id_producto)); 
+            context.setVariable("tiposP", tipoProductoService.findAll()); 
+            String htmlContent = templateEngine.process("Producto/ModalProducto", context);
+
+            return ResponseEntity.ok(htmlContent);
+
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");
+        }
+    }
+
+    @PostMapping("/editarProducto")
+    public ResponseEntity<String> editarProducto(HttpServletRequest request,
+    @RequestParam("id_producto") Long id_producto,
+    @RequestParam("nom_producto") String nom_producto,
+    @RequestParam("cod_producto") String cod_producto,
+    @RequestParam("stock") Double stock,
+    @RequestParam("precio") Double precio,
+    @RequestParam("marca") String marca,
+    @RequestParam("descripcion_producto") String descripcion_producto,
+    @RequestParam("id_tipo_producto") Long id_tipo_producto,
+    @RequestParam("file") MultipartFile file) {
+         // Validar sesión
+         if (request.getSession().getAttribute("usuario") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");
+        }
+        try {
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+
+            Producto producto = productoService.findOne(id_producto);
+            producto.setNom_producto(nom_producto.toUpperCase());
+            producto.setCod_producto(cod_producto.toUpperCase());
+            producto.setStock(stock);
+            producto.setPrecio(precio);
+            producto.setMarca(marca.toUpperCase());
+            producto.setDescripcion_producto(descripcion_producto.toUpperCase());
+            producto.setTipoProducto(tipoProductoService.findOne(id_tipo_producto));
+            producto.setEstado_producto("A");
+            producto.setFecha_registro(new Date());
+            producto.setFecha_modificacion(new Date());
+            producto.setUser_mod(usuario.getId_usuario().intValue());
+            // Procesar la imagen
+            if (!file.isEmpty()) {
+                // 1. Usar ruta absoluta o directorio externo (recomendado para producción)
+                String uploadDir = System.getProperty("user.dir") + "/uploads/";
+                // 2. Crear directorio si no existe
+                Path uploadPath = Paths.get(uploadDir);
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                 // Eliminar imagen anterior si existe
+                if (producto.getRuta_imagen() != null) {
+                    Path oldImagePath = uploadPath.resolve(producto.getRuta_imagen());
+                    try {
+                        Files.deleteIfExists(oldImagePath);
+                    } catch (IOException ex) {
+                        ex.printStackTrace(); // Puedes registrar o ignorar este error
+                    }
+                }
+
+                // 3. Generar nombre único y seguro para el archivo
+                String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
+                String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+                String fileName = UUID.randomUUID().toString() + fileExtension;
+
+                // 4. Guardar el archivo (usando java.nio.Path)
+                Path filePath = uploadPath.resolve(fileName);
+                file.transferTo(filePath.toFile());
+
+                // 5. Guardar ruta relativa o absoluta en BD
+                producto.setRuta_imagen(fileName); // Ruta accesible desde el frontend
+            }
+
+            productoService.save(producto);
+            return ResponseEntity.ok("1");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al guardar la imagen: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error inesperado: " + e.getMessage());
+        }
+    }
+    
+    
+
 }
