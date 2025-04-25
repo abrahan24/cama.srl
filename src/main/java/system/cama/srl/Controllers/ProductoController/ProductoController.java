@@ -194,7 +194,7 @@ public class ProductoController {
     @RequestParam("marca") String marca,
     @RequestParam("descripcion_producto") String descripcion_producto,
     @RequestParam("id_tipo_producto") Long id_tipo_producto,
-    @RequestParam("file") MultipartFile file) {
+    @RequestParam("imagenProductoInput") MultipartFile file) {
          // Validar sesión
          if (request.getSession().getAttribute("usuario") == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");

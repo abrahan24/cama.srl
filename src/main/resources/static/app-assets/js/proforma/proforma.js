@@ -144,6 +144,14 @@ $(document).ready(function() {
               if (result.isConfirmed) {
                   producto.cantidad = parseInt(result.value, 10);
                   productosSeleccionados.push(producto);
+                  toastr.success("Producto " + producto.nombre + " Seleccionado Correctamente!",
+                      {
+                          timeOut: 2000,
+                          hideMethod: "slideUp", 
+                          positionClass: 'toast-bottom-right',
+                          closeButton: false,
+                          progressBar: true 
+                      });
                   actualizarTablaSeleccionados();
               }
           });
