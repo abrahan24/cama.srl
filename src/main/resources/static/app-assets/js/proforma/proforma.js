@@ -144,9 +144,9 @@ $(document).ready(function() {
               if (result.isConfirmed) {
                   producto.cantidad = parseInt(result.value, 10);
                   productosSeleccionados.push(producto);
-                  toastr.success("Producto " + producto.nombre + " Seleccionado Correctamente!",
+                  toastr.success("Producto " + producto.nombre + " Seleccionado Correctamente!",'Operacion Exitosa!',
                       {
-                          timeOut: 2000,
+                          timeOut: 3000,
                           hideMethod: "slideUp", 
                           positionClass: 'toast-bottom-right',
                           closeButton: false,
@@ -206,7 +206,16 @@ $(document).ready(function() {
     $(document).on('click', '.btn-eliminar-producto', function (e) {
         e.preventDefault();
         const index = $(this).data('index');
+        const producto = productosSeleccionados[index];
         productosSeleccionados.splice(index, 1);
+        toastr.info("Producto " + producto.nombre + " Eliminado Correctamente!",'Operacion Exitosa!',
+            {
+                timeOut: 3000,
+                hideMethod: "slideUp", 
+                positionClass: 'toast-bottom-right',
+                closeButton: false,
+                progressBar: true 
+            });
         actualizarTablaSeleccionados();
     });
 
@@ -235,6 +244,14 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 productosSeleccionados[index].cantidad = parseInt(result.value);
+                toastr.success("Producto " + producto.nombre + " Editado Correctamente!",'Operacion Exitosa!',
+                    {
+                        timeOut: 3000,
+                        hideMethod: "slideUp", 
+                        positionClass: 'toast-bottom-right',
+                        closeButton: false,
+                        progressBar: true 
+                    });
                 actualizarTablaSeleccionados();
             }
         });
