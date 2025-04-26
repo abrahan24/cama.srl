@@ -109,53 +109,69 @@ $(document).ready(function() {
 
       // Evento al hacer clic en "Seleccionar"
       $(document).on('click', '.seleccionar-producto', function () {
-          const fila = $(this).closest('tr'); // la fila actual
-  
-          // Obtener los valores de la fila
-          const producto = {
-              nombre: fila.find('td:eq(1)').text().trim(),
-              codigo: fila.find('td:eq(2)').text().trim(),
-              descripcion: fila.find('td:eq(3)').text().trim(),
-              stock: parseInt(fila.find('td:eq(4)').text().trim(), 10),
-              precio: parseFloat(fila.find('td:eq(5)').text().trim())
-          };
-  
-          // SweetAlert para ingresar cantidad
-          Swal.fire({
-              title: 'Ingrese la cantidad',
-              input: 'number',
-              inputAttributes: {
-                  min: 1,
-                  max: producto.stock,
-                  step: 1
-              },
-              inputValidator: (value) => {
-                  if (!value || value <= 0) {
-                      return 'Debe ingresar una cantidad válida';
-                  }
-                  if (value > producto.stock) {
-                      return `No hay suficiente stock. Disponible: ${producto.stock}`;
-                  }
-                  return null;
-              },
-              showCancelButton: true,
-              confirmButtonText: 'Agregar',
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  producto.cantidad = parseInt(result.value, 10);
-                  productosSeleccionados.push(producto);
-                  toastr.success("Producto " + producto.nombre + " Seleccionado Correctamente!",'Operacion Exitosa!',
-                      {
-                          timeOut: 3000,
-                          hideMethod: "slideUp", 
-                          positionClass: 'toast-bottom-right',
-                          closeButton: false,
-                          progressBar: true 
-                      });
-                  actualizarTablaSeleccionados();
-              }
-          });
-      });
+        const table = $('#tablePEE').DataTable(); // Cambia por el id de tu tabla
+        let fila = $(this).closest('tr');
+        let row = table.row(fila);
+    
+        // Si no encuentra datos y es una fila child
+        if (!row.data()) {
+            fila = fila.prev(); // retrocedemos a la fila "padre"
+            row = table.row(fila);
+        }
+    
+        const data = row.data();
+    
+        if (!data) {
+            console.error('No se pudo obtener la data de la fila.');
+            return;
+        }
+    
+        // Ahora sí puedes acceder normalmente
+        const producto = {
+            nombre: data[1],
+            codigo: data[2],
+            descripcion: data[3],
+            stock: parseInt(data[4], 10),
+            precio: parseFloat(data[5])
+        };
+    
+        // SweetAlert para ingresar cantidad
+        Swal.fire({
+            title: 'Ingrese la cantidad',
+            input: 'number',
+            inputAttributes: {
+                min: 1,
+                max: producto.stock,
+                step: 1
+            },
+            inputValidator: (value) => {
+                if (!value || value <= 0) {
+                    return 'Debe ingresar una cantidad válida';
+                }
+                if (value > producto.stock) {
+                    return `No hay suficiente stock. Disponible: ${producto.stock}`;
+                }
+                return null;
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Agregar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                producto.cantidad = parseInt(result.value, 10);
+                productosSeleccionados.push(producto);
+                toastr.success("Producto " + producto.nombre + " Seleccionado Correctamente!", 'Operacion Exitosa!',
+                    {
+                        timeOut: 3000,
+                        hideMethod: "slideUp",
+                        positionClass: 'toast-bottom-right',
+                        closeButton: false,
+                        progressBar: true
+                    });
+                actualizarTablaSeleccionados();
+            }
+        });
+    });
+    
   
  // Mostrar productos seleccionados en otra tabla
  function actualizarTablaSeleccionados() {
