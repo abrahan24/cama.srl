@@ -1,0 +1,183 @@
+<form th:action="@{../actualizar_perfil_general}" method="post" id="form_general" enctype="multipart/form-data" novalidate>
+    <div class="media">
+        <a href="javascript:void(0);">
+            <div>
+                <img th:if="${usuario.imagen_base64 != null}"
+                     th:src="'data:image/jpeg;base64,' + ${usuario.imagen_base64}"
+                     id="preview-img"
+                     class="rounded mr-75"
+                     alt="profile image" height="100" width="100">
+                <img th:if="${usuario.imagen_base64 == null}"
+                     src="../../../app-assets/images/portrait/small/usuario.jpeg"
+                     id="preview-img"
+                     class="rounded mr-75"
+                     alt="profile image" height="100" width="100">
+            </div>
+        </a>
+        <div class="media-body mt-75">
+            <div class="col-12 px-0 d-flex flex-sm-row flex-column justify-content-start">
+                <label class="btn btn-sm btn-primary ml-50 mb-50 mb-sm-0 cursor-pointer" for="account-upload">
+                    Actualizar Foto
+                </label>
+                <input type="file" id="account-upload" name="imagen" hidden accept="image/png, image/jpeg">
+            </div>
+            <p class="text-muted ml-75 mt-50">
+                <small>Imagen JPG o PNG. Max de 800 kB (200x200 px)</small>
+            </p>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <div class="controls">
+                    <label for="account-username">Nombre de Usuario</label>
+                    <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Usuario" th:value="${usuario.user_name}" required
+                        data-validation-required-message="This username field is required">
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <div class="controls">
+                    <label for="account-name">Nombres</label>
+                    <input type="text" class="form-control" id="nombres" name="nombres" placeholder="Nombres" th:value="${usuario.persona.nombres}" required
+                        data-validation-required-message="This name field is required">
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <div class="controls">
+                    <label for="account-name">Apellidos</label>
+                    <input type="text" class="form-control" id="apellidos" name="apellidos" placeholder="Apellidos" th:value="${usuario.persona.apellidos}" required
+                        data-validation-required-message="This name field is required">
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <div class="controls">
+                    <label for="account-e-mail">Correo Electrónico (E-mail)</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Correo"
+                        th:value="${usuario.persona.email}" required
+                        data-validation-required-message="Este campo es obligatorio">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mostrar alerta solo si el correo no está verificado -->
+        <div class="col-12" th:if="${!usuario.correoVerificado}">
+            <div class="alert alert-warning alert-dismissible mb-2" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <p class="mb-0">
+                    Su correo no está verificado. Por favor revise su bandeja de entrada.
+                </p>
+                <a href="#" id="reenviar-confirmacion" th:data-idusuario="${usuario.id_usuario}">
+                    Reenviar confirmación
+                </a>
+            </div>
+        </div>
+        <div class="col-12" th:if="${usuario.correoVerificado}">
+            <div class="alert alert-success alert-dismissible mb-2" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <p class="mb-0">
+                    Su correo está verificado.
+                </p>
+               
+            </div>
+        </div>
+
+        <div class="col-12 d-flex flex-sm-row flex-column justify-content-end">
+            <button type="submit" class="btn btn-primary mr-sm-1 mb-1 mb-sm-0">Guardar Cambios</button>
+            <button type="reset" class="btn btn-danger">Cancelar</button>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+
+        const activeLink = $('.nav-link.active');
+        const fullId = activeLink.attr('id'); // Ej: account-pill-general-45
+        const id_usuario = fullId.split('-').pop();
+        
+        $('#account-upload').change(function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const allowedTypes = ['image/jpeg', 'image/png'];
+            if ($.inArray(file.type, allowedTypes) === -1) {
+                toastr.error("Solo se permiten imágenes JPG o PNG.");
+                return;
+            }
+
+            if (file.size > 800 * 1024) {
+                toastr.error("La imagen no debe superar los 800 KB.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    if (img.width !== 200 || img.height !== 200) {
+                        toastr.warning("La imagen debe ser de 200x200 píxeles.");
+                    } else {
+                        $('#preview-img').attr('src', e.target.result);
+                    }
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function soloLetrasInput(e) {
+            const valor = e.target.value;
+            const limpio = valor.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+            if (valor !== limpio) {
+                e.target.value = limpio;
+                toastr.warning("❌ Solo se permiten letras.");
+            }
+        }
+
+        $('#nombres, #apellidos').on('input', soloLetrasInput);
+       
+        $('#form_general').on('submit', function (e) {
+            e.preventDefault(); // Detiene el envío
+
+            // Si pasa la validación, se envía el AJAX
+            const formData = new FormData(this);
+    
+            $.ajax({
+                type: "POST",
+                url: "/actualizar_perfil_general",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (mensaje) {
+                    toastr.success(mensaje);
+                    cargarSeccionGeneral(id_usuario);
+                    $('#navbar-container').load('/navbar');
+                },
+                error: function (xhr) {
+                    let msg = xhr.responseText || "Ocurrió un error inesperado.";
+                    if (xhr.status === 400) {
+                        toastr.warning("⚠️ " + msg);
+                    } else if (xhr.status === 401) {
+                        toastr.error("🔒 " + msg);
+                        // Redirigir después de mostrar error
+                        setTimeout(() => {
+                            window.location.href = "/login";
+                        }, 2000);
+                    } else {
+                        toastr.error( msg);
+                    }
+                }
+            });
+        });
+    });
+    </script>

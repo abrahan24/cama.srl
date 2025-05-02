@@ -190,11 +190,17 @@
                         </ul>
                     </li> -->
                     <li class="dropdown dropdown-user nav-item"><a class="dropdown-toggle nav-link dropdown-user-link" href="#"
-                            data-toggle="dropdown"><span class="mr-1 user-name text-bold-700" th:text="${session.usuario.persona.nombres}" >John Doe</span><span
-                                class="avatar avatar-online"><img src="../../../app-assets/images/portrait/small/avatar-s-19.png"
-                                    alt="avatar"><i></i></span></a>
+                            data-toggle="dropdown"><span class="mr-1 user-name text-bold-700"
+                                th:text="${session.usuario.persona.nombres}">John Doe</span><span class="avatar avatar-online">
+                                    <img
+                                    th:if="${session.usuario.imagen_base64 != null}"
+                                    th:src="'data:image/jpeg;base64,' + ${session.usuario.imagen_base64}" alt="avatar">
+                                    <img
+                                    th:if="${session.usuario.imagen_base64 == null}"
+                                    src="../../../app-assets/images/portrait/small/usuario.jpeg" alt="avatar">
+                                    <i></i></span></a>
                         <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="user-profile.html"><i class="ft-user"></i> Editar Perfil</a>
+                            <a class="dropdown-item" th:href="@{../perfil_user}"><i class="ft-user"></i> Editar Perfil</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" th:href="${'/cerrar_sesion'}"><i class="ft-power"></i> Cerra Sesion</a>
                         </div>

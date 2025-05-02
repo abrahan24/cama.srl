@@ -42,42 +42,42 @@
 
 <script>
     $(document).ready(function () {
-        $('#responsive_single2').select2({
-            placeholder:"Seleccione..."
+            $('#responsive_single2').select2({
+                placeholder: "Seleccione..."
+            });
+
+            $('#form2').submit(function (event) {
+                event.preventDefault();
+
+                var form = document.getElementById("form1");
+                var action = form.action;
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: $(this).attr('action'),
+                    data: formData,
+                    contentType: 'application/x-www-form-urlencoded',
+                    success: function (response) {
+                        var mensaje = response;
+                        if (mensaje === "1") {
+                            Swal.fire({
+                                title: 'Registro Exitoso!',
+                                icon: "success",
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            cargarTabla();
+                            $("#formSubEnlace").modal("hide");
+
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('Ha ocurrido un error. Por favor, intenta nuevamente.' + xhr, status, error);
+                        console.error(error);
+                        // Manejo de errores
+                    }
+                });
+            });
         });
-    });
-
-    $('#form2').submit(function (event) {
-        event.preventDefault();
-
-        var form = document.getElementById("form1");
-        var action = form.action;
-        var formData = $(this).serialize();
-
-        $.ajax({
-            type: 'POST',
-            url: $(this).attr('action'),
-            data: formData,
-            contentType: 'application/x-www-form-urlencoded',
-            success: function (response) {
-                var mensaje = response;
-                if (mensaje === "1") {
-                    Swal.fire({
-                        title: 'Registro Exitoso!',
-                        icon: "success",
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    cargarTabla();
-                    $("#formSubEnlace").modal("hide");
-                    
-                }
-            },
-            error: function (xhr, status, error) {
-                toastr.error('Ha ocurrido un error. Por favor, intenta nuevamente.' + xhr, status, error);
-                console.error(error);
-                // Manejo de errores
-            }
-        });
-    });
 </script>

@@ -1,6 +1,7 @@
 package system.cama.srl.Models.ServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,5 +38,18 @@ public class PersonaServiceImpl implements PersonaService{
         // TODO Auto-generated method stub
         personaDao.deleteById(id);
     }
-    
+
+    @Override
+    public Optional<Persona> findByCi(String ci) {
+        // TODO Auto-generated method stub
+        return personaDao.findByCi(ci);
+    }
+
+    @Override
+    public Optional<Persona> findByNumCelular(String numCelular) {
+        // TODO Auto-generated method stub
+        return personaDao.findByNumCelular(numCelular);
+    }
+
+
 }

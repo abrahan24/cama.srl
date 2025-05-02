@@ -19,4 +19,7 @@ public interface ProductoService {
 	public List<Producto> obtenerProductosPorNombres(@Param("nom_producto") String nom_producto);
 
 	public List<Producto> obtenerProductosPorCodigoProducto(@Param("cod_producto") String cod_producto);
+
+	Producto obtenerProductoPorCodigo(@Param("cod_producto") String cod_producto);
+
 }

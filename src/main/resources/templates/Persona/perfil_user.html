@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+
+<head th:insert="~{Layouts/Head :: head}"> 
+    <style>
+        .input-valid {
+            border: 2px solid #28a745 !important;
+            /* verde */
+        }
+    
+        .input-invalid {
+            border: 2px solid #dc3545 !important;
+            /* rojo */
+        }
+    </style>
+</head>
+<!-- END: Head-->
+
+<!-- BEGIN: Body-->
+
+<body class="vertical-layout vertical-menu-modern vertical-collapsed-menu 2-columns   menu-collapsed fixed-navbar" data-open="click" data-menu="vertical-menu-modern" data-col="2-columns">
+
+    <!-- BEGIN: Header-->
+    <div id="navbar-container">
+        <nav th:insert="~{Layouts/Navbar :: navbar}"></nav>
+    </div>
+    <!-- END: Header-->
+
+    <!-- BEGIN: Main Menu-->
+
+    <div th:insert="~{Layouts/MainMenu :: mainMenu}"> </div>
+    <!-- <div id="menuPrincipal"> </div> -->
+
+    <!-- END: Main Menu-->
+
+    <!-- BEGIN: Content-->
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+            </div>
+            <div class="content-body">
+                <section id="page-account-settings">
+                    <div class="row">
+                        <!-- left menu section -->
+                        <div class="col-md-3 mb-2 mb-md-0">
+                            <ul class="nav nav-pills flex-column mt-md-0 mt-1">
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex active" th:id="${'account_pill_general-'+session.usuario.id_usuario}"  data-toggle="pill" href="#account-vertical-general" aria-expanded="true">
+                                        <i class="ft-globe mr-50"></i>
+                                        General
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex"  th:id="${'account_pill_password-'+session.usuario.id_usuario}" data-toggle="pill" href="#account-vertical-password" aria-expanded="false">
+                                        <i class="ft-lock mr-50"></i>
+                                        Cambio de Contraseña
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link d-flex"  th:id="${'account_pill_info-'+session.usuario.id_usuario}" data-toggle="pill" href="#account-vertical-info" aria-expanded="false">
+                                        <i class="ft-info mr-50"></i>
+                                        Informacion
+                                    </a>
+                                </li>
+                               
+                            </ul>
+                        </div>
+                        <!-- right content section -->
+                        <div class="col-md-9">
+                            <div class="card">
+                                <div class="card-content">
+                                    <div class="card-body">
+                                        <div class="tab-content">
+                                            <div role="tabpanel" class="tab-pane active" id="account-vertical-general" aria-labelledby="account-pill-general" aria-expanded="true">
+                                                <div id="general">
+
+                                                </div>
+                                            </div>
+                                            <div class="tab-pane fade " id="account-vertical-password" role="tabpanel" aria-labelledby="account-pill-password" aria-expanded="false">
+                                                <form  id="form-cambiar-password" novalidate>
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <div class="controls">
+                                                                    <label for="account-old-password">Antigua Contraseña</label>
+                                                                    <input type="password" class="form-control" id="oldPassword" name="oldPassword" required
+                                                                        placeholder="Antigua Contraseña" data-validation-required-message="Campo Requerido">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <div class="controls">
+                                                                    <label for="account-new-password">Nueva Contraseña</label>
+                                                                    <input type="password" name="newPassword" id="newPassword" class="form-control" placeholder="Nueva Contraseñaa" required
+                                                                        data-validation-required-message="Campo Requerido" minlength="6">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12">
+                                                            <div class="form-group">
+                                                                <div class="controls">
+                                                                    <label for="account-retype-new-password">Repita Nueva Contraseña</label>
+                                                                    <input type="password" name="confirmPassword" class="form-control" required id="confirmPassword"
+                                                                        data-validation-match-match="newPassword" placeholder="Repita Nueva Contraseña"
+                                                                        data-validation-required-message="Campo Requerido" minlength="6">
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <div class="col-12 d-flex flex-sm-row flex-column justify-content-end">
+                                                            <button type="submit" class="btn btn-primary mr-sm-1 mb-1 mb-sm-0">Guardar Cambios</button>
+                                                            <button type="reset" class="btn btn-danger">Cancelar</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="tab-pane fade" id="account-vertical-info" role="tabpanel" aria-labelledby="account-pill-info" aria-expanded="false">
+                                                <div id="informacion">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <!-- END: Content-->
+
+    <div class="sidenav-overlay"></div>
+    <div class="drag-target"></div>
+
+    <!-- BEGIN: Footer-->
+    <footer th:insert="~{Layouts/Footer :: footer}"> </footer>
+    <!-- END: Footer-->
+
+    <div th:insert="~{Layouts/Scripts :: scripts}"></div>
+    <script src="../../../app-assets/js/persona/perfil_user.js"></script>
+    <!-- Mostrar mensaje según el parámetro -->
+    <script>
+        // Mostrar toastr al cargar la página
+        const urlParams = new URLSearchParams(window.location.search);
+        const verificado = urlParams.get("verificado");
+    
+        if (verificado === 'ok') {
+            toastr.success("Correo verificado correctamente.");
+        } else if (verificado === 'error') {
+            toastr.error("El enlace es inválido o ha expirado.");
+        }
+    
+        // Limpiar la URL después de 3 segundos (3000 milisegundos)
+        setTimeout(() => {
+            if (window.history.replaceState) {
+                const cleanUrl = window.location.origin + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+        }, 3000);
+    </script>
+    </script>
+</body>
+<!-- END: Body-->
+
+</html>

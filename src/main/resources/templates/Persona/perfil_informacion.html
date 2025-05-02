@@ -1,0 +1,210 @@
+<form novalidate>
+    <div class="row">
+        <div class="col-12">
+            <div class="form-group">
+                <div class="controls">
+                    <label for="account-username">Nombre Completo</label>
+                    <input type="hidden" id="id_persona" name="id_persona" th:value="${usuario.persona.id_persona}" />
+                    <input type="text" class="form-control" id="nom_completo" name="nom_completo" placeholder="Usuario"
+                        th:value="${usuario.persona.nombres +' '+usuario.persona.apellidos}" required
+                        data-validation-required-message="This username field is required" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <div class="controls">
+                    <label for="account-username">Correo Electrónico (E-mail)</label>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Usuario"
+                        th:value="${usuario.persona.email}" required
+                        data-validation-required-message="This username field is required" readonly>
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <div class="controls">
+                    <label for="account-birth-date">Cumpleaños</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control pickadate-selectors" name="fecha_nacimiento" id="fecha_nacimiento"
+                            placeholder="Fecha De Nacimiento"
+                            th:value="${usuario.persona.fecha_nacimiento != null ? #dates.format(usuario.persona.fecha_nacimiento, 'dd/MM/yyyy') : ''}" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <span class="la la-calendar-o"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="form-group">
+                <div class="controls">
+                    <label for="account-phone">Celular</label>
+                    <input type="text" class="form-control" id="num_celular" name="num_celular"
+                        th:value="${usuario.persona.num_celular}" required placeholder="Celular"
+                        data-validation-required-message="Campo Requerido">
+                </div>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <div class="controls">
+                    <label for="account-phone">Cedula de Identidad (CI)</label>
+                    <input type="text" class="form-control" id="ci" name="ci" required placeholder="CI"
+                        th:value="${usuario.persona.ci}" data-validation-required-message="Campo Requerido">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 d-flex flex-sm-row flex-column justify-content-end">
+            <button type="submit" id="btnEnviar" class="btn btn-primary mr-sm-1 mb-1 mb-sm-0">Guardar Cambios</button>
+            <button type="reset" class="btn btn-danger">Cancelar</button>
+        </div>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        $.extend($.fn.pickadate.defaults, {
+            monthsFull: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            weekdaysFull: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            weekdaysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+            today: 'Hoy',
+            clear: 'Borrar',
+            close: 'Cerrar',
+            labelMonthNext: 'Mes siguiente',
+            labelMonthPrev: 'Mes anterior',
+            labelMonthSelect: 'Selecciona un mes',
+            labelYearSelect: 'Selecciona un año',
+            format: 'dd/mm/yyyy',
+            formatSubmit: 'yyyy/mm/dd',
+            firstDay: 1,
+        });
+
+        $('.pickadate-selectors').pickadate({
+            selectMonths: true,
+            selectYears: 100,
+            min: new Date(1950, 0, 1),
+            max: new Date() // Hasta hoy
+        });
+        const $ciInput = $('#ci');
+        const $celularInput = $('#num_celular');
+        const $submitBtn = $('#btnEnviar');
+
+        let ciValido = false;
+        let celularValido = false;
+
+        function toggleSubmit() {
+            $submitBtn.prop('disabled', !(ciValido && celularValido));
+        }
+
+        $ciInput.on('blur', function () {
+            const ci = $(this).val().trim();
+            const idPersona = $('#id_persona').val();
+
+            if (ci === '') {
+                ciValido = false;
+                toggleSubmit();
+                return;
+            }
+            $.ajax({
+                url: '/validar_ci',
+                method: 'GET',
+                data: { ci: ci, id: idPersona },
+                success: function (respuesta) {
+                    if (respuesta === 'CI disponible.') {
+                        toastr.success(respuesta);
+                        ciValido = true;
+                    } else {
+                        toastr.error(respuesta);
+                        ciValido = false;
+                    }
+                    toggleSubmit();
+                },
+                error: function (xhr) {
+                    toastr.error(xhr.responseText);
+                    ciValido = false;
+                    toggleSubmit();
+                }
+            });
+        });
+
+        $celularInput.on('blur', function () {
+            const celular = $(this).val().trim();
+            const idPersona = $('#id_persona').val();
+
+            if (celular === '') {
+                celularValido = false;
+                toggleSubmit();
+                return;
+            }
+
+            $.ajax({
+                url: '/validar_celular',
+                method: 'GET',
+                data: { celular: celular, id: idPersona },
+                success: function (respuesta) {
+                    if (respuesta === 'Celular disponible.') {
+                        toastr.success(respuesta);
+                        celularValido = true;
+                    } else {
+                        toastr.error(respuesta);
+                        celularValido = false;
+                    }
+                    toggleSubmit();
+                },
+                error: function (xhr) {
+                    toastr.error(xhr.responseText);
+                    celularValido = false;
+                    toggleSubmit();
+                }
+            });
+        });
+
+        // Validar en el inicio si los campos están vacíos
+        toggleSubmit();
+
+        $('#btnEnviar').on('click', function (e) {
+            e.preventDefault();
+
+            const formData = {
+                id_persona: $('#id_persona').val(),
+                fecha_nacimiento: $('#fecha_nacimiento').val(),
+                num_celular: $('#num_celular').val(),
+                ci: $('#ci').val()
+            };
+
+            $.ajax({
+                url: '/actualizar_persona',
+                method: 'POST',
+                data: formData,
+                success: function (response) {
+                    toastr.success(response);
+                    const activeLink = $('.nav-link.active');
+                    const fullId = activeLink.attr('id'); // Ej: account-pill-general-45
+                    const beforeDash = fullId.replace(/-.*/, ''); // elimina el primer guion y todo lo que le sigue
+                    const id_usuario = fullId.split('-').pop();
+                    cargarSeccion(id_usuario,beforeDash);
+
+                },
+                error: function (xhr) {
+                    let msg = xhr.responseText || "Ocurrió un error inesperado.";
+                    if (xhr.status === 404) {
+                        toastr.error('Persona no encontrada.');
+                    }else if (xhr.status === 401) {
+                        toastr.error("🔒 " + msg);
+                        // Redirigir después de mostrar error
+                        setTimeout(() => {
+                            window.location.href = "/login";
+                        }, 2000);
+                    }else {
+                        toastr.error('Error al actualizar los datos.');
+                    }
+                }
+            });
+        });
+    });
+</script>

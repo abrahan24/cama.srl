@@ -260,6 +260,20 @@ public class ProductoController {
         }
     }
     
+    @PostMapping("/editarPrecioProducto")
+    public ResponseEntity<String> editarPrecioProducto(HttpServletRequest request,
+    @RequestParam(name = "cod_producto")String cod_producto,
+    @RequestParam(name = "precio")Double precio) {
+        if (request.getSession().getAttribute("usuario") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");
+        }
+        
+        Producto producto = productoService.obtenerProductoPorCodigo(cod_producto);
+
+        producto.setPrecio(precio);
+        productoService.save(producto);
+        return ResponseEntity.ok("Producto Editado Con Exito el Precio!");
+    }
     
 
 }

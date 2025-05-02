@@ -129,13 +129,6 @@ public class ProformaController {
         }
     }
 
-    @PostMapping("/realizarProforma")
-    public String postMethodName(@RequestBody String entity) {
-        //TODO: process POST request
-        
-        return entity;
-    }
-    
     @PostMapping("/generarProformaConManoDeObra")
     public ResponseEntity<byte[]> generarProformaConManoDeObra(
             @RequestParam String nom_cliente,

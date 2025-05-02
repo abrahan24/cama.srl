@@ -15,7 +15,7 @@
 
 	// Change Day & Month strings
 	$('.pickadate-short-string').pickadate({
-		weekdaysShort: ['S', 'M', 'Tu', 'W', 'Th', 'F', 'S'],
+		weekdaysShort: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
 		showMonthsShort: true
 	});
 
@@ -32,7 +32,7 @@
 	// Button options
 	$('.pickadate-buttons').pickadate({
 		today: '',
-		close: 'Close Picker',
+		close: 'Cerrar Picker',
 		clear: ''
 	});
 

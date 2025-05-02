@@ -13,14 +13,19 @@
     <tbody id="tbodyPE">
         <tr th:each="p , num: ${productos}" style="font-size: small;">
             <td th:text="${num.index + 1}"></td>
-            <td th:text="${p.nom_producto}"></td>
-            <td th:text="${p.cod_producto}"></td>
-            <td th:text="${p.descripcion_producto}"></td>
-            <td th:text="${p.stock}"></td>
-            <td th:text="${p.precio}"></td>
+            <td class="td-nombre" th:text="${p.nom_producto}"></td>
+            <td class="td-codigo" th:text="${p.cod_producto}"></td>
+            <td class="td-descripcion" th:text="${p.descripcion_producto}"></td>
+            <td class="td-stock" th:text="${p.stock}"></td>
+            <td class="td-precio">
+                <span class="precio-valor" id="editar_precio" th:text="${p.precio}" th:data-codigo="${p.cod_producto}"
+                    th:data-precio="${p.precio}"
+                    style="cursor: pointer; color: #007bff;">
+                </span>
+            </td>
             <td class="text-center">
-                <button type="button" class="btn btn-icon seleccionar-producto btn-success mr-1 mb-1 " >
-                    <i class="la la-check"></i> 
+                <button type="button" class="btn btn-icon seleccionar-producto btn-success mr-1 mb-1 ">
+                    <i class="la la-check"></i>
                 </button>
             </td>
         </tr>

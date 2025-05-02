@@ -19,4 +19,9 @@ public interface ProductoDao extends CrudRepository<Producto , Long>{
     select p.* from producto p where p.estado_producto = 'A' and p.cod_producto  like concat(:cod_producto,'%')
     """,nativeQuery = true)
     public List<Producto> obtenerProductosPorCodigoProducto(@Param("cod_producto") String cod_producto);
+
+    @Query(value = """
+    select p.* from producto p where p.cod_producto = :cod_producto
+    """,nativeQuery = true)
+    Producto obtenerProductoPorCodigo(@Param("cod_producto") String cod_producto);
 }

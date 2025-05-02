@@ -50,5 +50,11 @@ public class ProductoServiceImpl implements ProductoService{
         // TODO Auto-generated method stub
         return productoDao.obtenerProductosPorCodigoProducto(cod_producto);
     }
+
+    @Override
+    public Producto obtenerProductoPorCodigo(String cod_producto) {
+        // TODO Auto-generated method stub
+        return productoDao.obtenerProductoPorCodigo(cod_producto);
+    }
     
 }
