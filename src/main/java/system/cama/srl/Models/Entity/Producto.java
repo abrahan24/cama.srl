@@ -45,6 +45,7 @@ public class Producto implements Serializable{
     private String ruta_imagen;
     private String unidad_medida;
     private Integer user_mod;
+    private Integer user_reg;
     private Date fecha_modificacion;
 
     @ManyToOne

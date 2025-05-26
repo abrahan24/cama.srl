@@ -82,6 +82,9 @@ public class ProductoController {
         }
 
         try {
+
+            Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+
             Producto producto = new Producto();
             producto.setNom_producto(nom_producto.toUpperCase());
             producto.setCod_producto(cod_producto.toUpperCase());
@@ -92,7 +95,8 @@ public class ProductoController {
             producto.setTipoProducto(tipoProductoService.findOne(id_tipo_producto));
             producto.setEstado_producto("A");
             producto.setFecha_registro(new Date());
-            producto.setUser_mod(null);
+            producto.setUser_mod(usuario.getId_usuario().intValue());
+            producto.setUser_reg(null);
             // Procesar la imagen
             if (!file.isEmpty()) {
                 // 1. Usar ruta absoluta o directorio externo (recomendado para producción)
